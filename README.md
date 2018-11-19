@@ -44,11 +44,14 @@ git clone https://github.com/udacity/CarND-Capstone.git
 
 2. Install python dependencies
 ```bash
+conda create -n carnd python=2.7
+source activate carnd
 cd CarND-Capstone
 pip install -r requirements.txt
 ```
 3. Make and run styx
 ```bash
+source activate carnd
 cd ros
 catkin_make
 source devel/setup.sh
