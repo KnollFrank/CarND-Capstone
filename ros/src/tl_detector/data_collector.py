@@ -123,12 +123,18 @@ class DataCollector(object):
 
     def process_traffic_lights(self):
         closest_light, car_wp_idx, line_wp_idx = self.get_closest_light()
-        if closest_light and self.distance(self.waypoints.waypoints, car_wp_idx, line_wp_idx) <= 50:
-            # rospy.loginfo("state: %d", closest_light.state)
-            # rospy.loginfo("dist(car, light): %d", dist)
-            self.img_counter += 1
-            fileName = "images/img_{:04d}_{}.jpg".format(self.img_counter, self.asString(closest_light.state))
-            cv2.imwrite(fileName, self.bridge.imgmsg_to_cv2(self.camera_image, "bgr8"))
+        if closest_light:
+            dist = self.distance(self.waypoints.waypoints, car_wp_idx, line_wp_idx)
+            rospy.loginfo("dist(car, light): %d", dist)
+            if dist <= 50:
+                # rospy.loginfo("state: %d", closest_light.state)
+                self.img_counter += 1
+                fileName = "images/img_{:04d}_{}.jpg".format(self.img_counter, self.asString(closest_light.state))
+                cv2.imwrite(fileName, self.bridge.imgmsg_to_cv2(self.camera_image, "bgr8"))
+            elif 200 <= dist and dist <= 210:
+                self.img_counter += 1
+                fileName = "images/img_{:04d}_NO_TRAFFIC_LIGHT.jpg".format(self.img_counter)
+                cv2.imwrite(fileName, self.bridge.imgmsg_to_cv2(self.camera_image, "bgr8"))
 
     # TODO: DRY with WaypointUpdater.distance()
     def distance(self, waypoints, wp1, wp2):
