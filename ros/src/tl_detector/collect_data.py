@@ -12,6 +12,7 @@ import cv2
 import yaml
 from scipy.spatial import KDTree
 import math
+import os, errno
 
 STATE_COUNT_THRESHOLD = 3
 
@@ -53,6 +54,7 @@ class DataCollector(object):
 
         self.waypoints_2d = None
         self.waypoint_tree = None
+        self.img_counter = 0
 
         rospy.spin()
 
@@ -102,6 +104,17 @@ class DataCollector(object):
 
         return closest_light, car_wp_idx, line_wp_idx
 
+    # TODO: refactor, introduce enum for TrafficLight.state
+    def asString(self, state):
+        if state == TrafficLight.RED:
+            return "RED"
+        if state == TrafficLight.YELLOW:
+            return "YELLOW"
+        if state == TrafficLight.GREEN:
+            return "GREEN"
+        if state == TrafficLight.UNKNOWN:
+            return "UNKNOWN"
+
     def process_traffic_lights(self):
         closest_light, car_wp_idx, line_wp_idx = self.get_closest_light()
 
@@ -110,7 +123,15 @@ class DataCollector(object):
             if dist <= 50:
                 rospy.loginfo("state: %d", closest_light.state)
                 # rospy.loginfo("dist(car, light): %d", dist)
-                rospy.loginfo("camera_image: %s", self.camera_image)
+                cv_image = self.bridge.imgmsg_to_cv2(self.camera_image, "bgr8")
+                # TODO: extract method
+                try:
+                    os.makedirs("images")
+                except OSError as e:
+                    if e.errno != errno.EEXIST:
+                        raise
+                self.img_counter += 1
+                cv2.imwrite("images/img_" + str(self.img_counter) + "_" + self.asString(closest_light.state) + ".jpg", cv_image)
 
     # TODO: DRY with WaypointUpdater.distance()
     def distance(self, waypoints, wp1, wp2):
