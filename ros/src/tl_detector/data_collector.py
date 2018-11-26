@@ -29,7 +29,8 @@ class DataCollector(object):
         if active == 'no':
             return
 
-        self.mkdir("images")
+        self.image_dir = "light_classification/images"
+        self.mkdir(self.image_dir)
 
         sub1 = rospy.Subscriber('/current_pose', PoseStamped, self.pose_cb)
         sub2 = rospy.Subscriber('/base_waypoints', Lane, self.waypoints_cb)
@@ -123,7 +124,7 @@ class DataCollector(object):
 
     def saveCameraImage(self, fileNameSuffix):
         self.img_counter += 1
-        fileName = "images/img_{:04d}_{}.jpg".format(self.img_counter, fileNameSuffix)
+        fileName = "{}/img_{:04d}_{}.jpg".format(self.image_dir, self.img_counter, fileNameSuffix)
         cv2.imwrite(fileName, self.bridge.imgmsg_to_cv2(self.camera_image, "bgr8"))
 
     def process_traffic_lights(self):
