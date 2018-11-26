@@ -29,6 +29,8 @@ class DataCollector(object):
         if active == 'no':
             return
 
+        self.mkdir("images")
+
         sub1 = rospy.Subscriber('/current_pose', PoseStamped, self.pose_cb)
         sub2 = rospy.Subscriber('/base_waypoints', Lane, self.waypoints_cb)
 
@@ -54,6 +56,13 @@ class DataCollector(object):
         self.img_counter = 0
 
         rospy.spin()
+
+    def mkdir(self, path):
+        try:
+            os.makedirs(path)
+        except OSError as e:
+            if e.errno != errno.EEXIST:
+                raise
 
     def pose_cb(self, msg):
         self.pose = msg
@@ -114,22 +123,12 @@ class DataCollector(object):
 
     def process_traffic_lights(self):
         closest_light, car_wp_idx, line_wp_idx = self.get_closest_light()
-
-        if closest_light:
-            dist = self.distance(self.waypoints.waypoints, car_wp_idx, line_wp_idx)
-            if dist <= 50:
-                # rospy.loginfo("state: %d", closest_light.state)
-                # rospy.loginfo("dist(car, light): %d", dist)
-                cv_image = self.bridge.imgmsg_to_cv2(self.camera_image, "bgr8")
-                # TODO: extract method
-                try:
-                    os.makedirs("images")
-                except OSError as e:
-                    if e.errno != errno.EEXIST:
-                        raise
-                self.img_counter += 1
-                fileName = "images/img_{:04d}_{}.jpg".format(self.img_counter, self.asString(closest_light.state))
-                cv2.imwrite(fileName, cv_image)
+        if closest_light and self.distance(self.waypoints.waypoints, car_wp_idx, line_wp_idx) <= 50:
+            # rospy.loginfo("state: %d", closest_light.state)
+            # rospy.loginfo("dist(car, light): %d", dist)
+            self.img_counter += 1
+            fileName = "images/img_{:04d}_{}.jpg".format(self.img_counter, self.asString(closest_light.state))
+            cv2.imwrite(fileName, self.bridge.imgmsg_to_cv2(self.camera_image, "bgr8"))
 
     # TODO: DRY with WaypointUpdater.distance()
     def distance(self, waypoints, wp1, wp2):
