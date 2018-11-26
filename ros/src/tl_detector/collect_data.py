@@ -15,7 +15,7 @@ import math
 
 STATE_COUNT_THRESHOLD = 3
 
-class TLDetector2(object):
+class DataCollector(object):
     def __init__(self):
         rospy.init_node('collect_data')
 
@@ -77,13 +77,14 @@ class TLDetector2(object):
     def get_closest_waypoint(self, x, y):
         return self.waypoint_tree.query([x, y], 1)[1]
 
-    def process_traffic_lights(self):
+    def get_closest_light(self):
         closest_light = None
         line_wp_idx = None
+        car_wp_idx = None
 
         # List of positions that correspond to the line to stop in front of for a given intersection
         stop_line_positions = self.config['stop_line_positions']
-        if(self.pose):
+        if self.pose:
             car_wp_idx = self.get_closest_waypoint(self.pose.pose.position.x, self.pose.pose.position.y)
 
             # TODO find the closest visible traffic light (if one exists)
@@ -99,12 +100,16 @@ class TLDetector2(object):
                     closest_light = light
                     line_wp_idx = temp_wp_idx
 
+        return closest_light, car_wp_idx, line_wp_idx
+
+    def process_traffic_lights(self):
+        closest_light, car_wp_idx, line_wp_idx = self.get_closest_light()
+
         if closest_light:
-            state = closest_light.state
             dist = self.distance(self.waypoints.waypoints, car_wp_idx, line_wp_idx)
             if dist <= 50:
-                rospy.loginfo("state: %d", state)
-                rospy.loginfo("dist(car, light): %d", dist)
+                rospy.loginfo("state: %d", closest_light.state)
+                # rospy.loginfo("dist(car, light): %d", dist)
                 rospy.loginfo("camera_image: %s", self.camera_image)
 
     # TODO: DRY with WaypointUpdater.distance()
@@ -118,6 +123,6 @@ class TLDetector2(object):
 
 if __name__ == '__main__':
     try:
-        TLDetector2()
+        DataCollector()
     except rospy.ROSInterruptException:
         rospy.logerr('Could not start traffic node.')
