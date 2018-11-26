@@ -118,7 +118,7 @@ class DataCollector(object):
         if closest_light:
             dist = self.distance(self.waypoints.waypoints, car_wp_idx, line_wp_idx)
             if dist <= 50:
-                rospy.loginfo("state: %d", closest_light.state)
+                # rospy.loginfo("state: %d", closest_light.state)
                 # rospy.loginfo("dist(car, light): %d", dist)
                 cv_image = self.bridge.imgmsg_to_cv2(self.camera_image, "bgr8")
                 # TODO: extract method
@@ -128,7 +128,8 @@ class DataCollector(object):
                     if e.errno != errno.EEXIST:
                         raise
                 self.img_counter += 1
-                cv2.imwrite("images/img_" + str(self.img_counter) + "_" + self.asString(closest_light.state) + ".jpg", cv_image)
+                fileName = "images/img_{:04d}_{}.jpg".format(self.img_counter, self.asString(closest_light.state))
+                cv2.imwrite(fileName, cv_image)
 
     # TODO: DRY with WaypointUpdater.distance()
     def distance(self, waypoints, wp1, wp2):
