@@ -1,8 +1,7 @@
 *.py[cod]
-
 build
 devel
-
 profile.tmp
-
 dbw_test.rosbag.bag
+ros/src/tl_detector/images
+
