@@ -18,6 +18,14 @@ class TLDetector(object):
     def __init__(self):
         rospy.init_node('tl_detector')
 
+        self.state = TrafficLight.UNKNOWN
+        self.last_state = TrafficLight.UNKNOWN
+        self.last_wp = -1
+        self.state_count = 0
+
+        self.waypoints_2d = None
+        self.waypoint_tree = None
+
         self.pose = None
         self.waypoints = None
         self.camera_image = None
@@ -44,14 +52,6 @@ class TLDetector(object):
         self.bridge = CvBridge()
         self.light_classifier = TLClassifier()
         self.listener = tf.TransformListener()
-
-        self.state = TrafficLight.UNKNOWN
-        self.last_state = TrafficLight.UNKNOWN
-        self.last_wp = -1
-        self.state_count = 0
-
-        self.waypoints_2d = None
-        self.waypoint_tree = None
 
         rospy.spin()
 
@@ -122,7 +122,7 @@ class TLDetector(object):
 
         """
         # For testing, just return the light state
-        return light.state
+        # return light.state
 
         if(not self.has_image):
             self.prev_light_loc = None
