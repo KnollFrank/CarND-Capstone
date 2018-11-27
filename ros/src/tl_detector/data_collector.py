@@ -31,6 +31,11 @@ class DataCollector(object):
 
         self.image_dir = "light_classification/images"
         self.mkdir(self.image_dir)
+        self.mkdir(self.image_dir + "/red")
+        self.mkdir(self.image_dir + "/green")
+        self.mkdir(self.image_dir + "/yellow")
+        self.mkdir(self.image_dir + "/unknown")
+        self.mkdir(self.image_dir + "/no_traffic_light")
 
         sub1 = rospy.Subscriber('/current_pose', PoseStamped, self.pose_cb)
         sub2 = rospy.Subscriber('/base_waypoints', Lane, self.waypoints_cb)
@@ -114,17 +119,17 @@ class DataCollector(object):
     # TODO: refactor, introduce enum for TrafficLight.state
     def asString(self, state):
         if state == TrafficLight.RED:
-            return "RED"
+            return "red"
         if state == TrafficLight.YELLOW:
-            return "YELLOW"
+            return "yellow"
         if state == TrafficLight.GREEN:
-            return "GREEN"
+            return "green"
         if state == TrafficLight.UNKNOWN:
-            return "UNKNOWN"
+            return "unknown"
 
     def saveCameraImage(self, fileNameSuffix):
         self.img_counter += 1
-        fileName = "{}/img_{:04d}_{}.jpg".format(self.image_dir, self.img_counter, fileNameSuffix)
+        fileName = "{0}/{2}/img_{1:04d}_{2}.jpg".format(self.image_dir, self.img_counter, fileNameSuffix)
         cv2.imwrite(fileName, self.bridge.imgmsg_to_cv2(self.camera_image, "bgr8"))
 
     def process_traffic_lights(self):
@@ -136,7 +141,7 @@ class DataCollector(object):
             if dist <= 50:
                 self.saveCameraImage(self.asString(closest_light.state))
             elif 200 <= dist and dist <= 210:
-                self.saveCameraImage("NO_TRAFFIC_LIGHT")
+                self.saveCameraImage("no_traffic_light")
 
     # TODO: DRY with WaypointUpdater.distance()
     def distance(self, waypoints, wp1, wp2):
