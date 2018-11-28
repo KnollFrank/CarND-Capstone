@@ -20,8 +20,7 @@ def preprocess(image):
 
 class TLClassifier(object):
     def __init__(self):
-        # TODO load classifier
-        self.model = load_model('light_classification/model_lenet.h5')
+        self.model = load_model('light_classification/model.h5')
         # see: https://stackoverflow.com/questions/47115946/tensor-is-not-an-element-of-this-graph
         self.graph = tf.get_default_graph()
         self.encoder = LabelEncoder()
@@ -50,7 +49,6 @@ class TLClassifier(object):
             int: ID of traffic light color (specified in styx_msgs/TrafficLight)
 
         """
-        # TODO implement light color prediction
         image_array = preprocess(np.asarray(image))
         with self.graph.as_default():
             ynew = self.model.predict(image_array[None, :, :, :])
