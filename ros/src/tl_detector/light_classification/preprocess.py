@@ -16,10 +16,6 @@ def preprocess(image):
     return resize(image)
 
 
-def create_Cropping2D():
-    return Cropping2D(cropping=((int(70 * factor), int(25 * factor)), (0, 0)))
-
-
 def get_input_shape():
     width = 800
     height = 600

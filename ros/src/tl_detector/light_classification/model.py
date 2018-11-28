@@ -3,7 +3,7 @@ from keras.callbacks import ModelCheckpoint
 from keras.layers import Flatten, Dense, Lambda, MaxPooling2D
 from keras.layers.convolutional import Convolution2D
 from keras.models import Sequential
-from preprocess import get_images_and_measurements, get_input_shape, create_Cropping2D
+from preprocess import get_images_and_measurements, get_input_shape
 
 def get_X_train_y_train():
     images, measurements = get_images_and_measurements()
@@ -22,7 +22,6 @@ def create_model_simple():
 def create_model_LeNet():
     model = Sequential()
     model.add(Lambda(lambda image: image / 255.0 - 0.5, input_shape=get_input_shape()))
-    model.add(create_Cropping2D())
     model.add(Convolution2D(6, 5, 5, activation='relu'))
     model.add(MaxPooling2D())
     model.add(Convolution2D(6, 5, 5, activation='relu'))
@@ -38,7 +37,6 @@ def create_model_LeNet():
 def create_model_Nvidia():
     model = Sequential()
     model.add(Lambda(lambda image: image / 255.0 - 0.5, input_shape=get_input_shape()))
-    model.add(create_Cropping2D())
     model.add(Convolution2D(24, 5, 5, subsample=(2, 2), activation='relu'))
     model.add(Convolution2D(64, 3, 3, activation='relu'))
     model.add(Convolution2D(64, 3, 3, activation='relu'))
