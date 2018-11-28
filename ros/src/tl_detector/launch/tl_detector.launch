@@ -2,6 +2,6 @@
 <launch>
     <node pkg="tl_detector" type="tl_detector.py" name="tl_detector" output="screen" cwd="node"/>
     <node pkg="tl_detector" type="data_collector.py" name="data_collector" output="screen" cwd="node">
-      <param name="active" value="no" /> <!-- yes or no-->
+      <param name="active" value="no" /> <!-- yes or no -->
     </node>
 </launch>
