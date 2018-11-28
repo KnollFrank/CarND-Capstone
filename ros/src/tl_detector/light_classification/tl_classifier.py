@@ -20,7 +20,7 @@ def preprocess(image):
 
 class TLClassifier(object):
     def __init__(self):
-        self.model = load_model('light_classification/model_squeezenet.h5')
+        self.model = load_model('light_classification/model_lenet.h5')
         # see: https://stackoverflow.com/questions/47115946/tensor-is-not-an-element-of-this-graph
         self.graph = tf.get_default_graph()
         self.encoder = LabelEncoder()
@@ -53,7 +53,7 @@ class TLClassifier(object):
 
         """
         image_array = preprocess(np.asarray(image))
-        image_array = self.channels_last_2_channels_first(image_array)
+        # image_array = self.channels_last_2_channels_first(image_array)
         with self.graph.as_default():
             ynew = self.model.predict(image_array[None, :, :, :])
         label = self.encoder.inverse_transform([np.argmax(ynew)])[0]

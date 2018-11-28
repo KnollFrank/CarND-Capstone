@@ -65,8 +65,10 @@ def channels_last_2_channels_first(image):
 
 if __name__ == '__main__':
     X_train, y_train = get_X_train_y_train()
-    (height, width, channels) = get_input_shape()
+    train(create_model_LeNet(), X_train, y_train, save_model_2_file='model_lenet.h5')
+    #(height, width, channels) = get_input_shape()
     # SqueezeNet braucht channels_first
-    model = SqueezeNet(nb_classes = 5, inputs = (channels, height, width))
-    X_train_channels_first = np.array(list(map(channels_last_2_channels_first, X_train)))
-    train(model, X_train_channels_first, y_train, save_model_2_file='model_squeezenet.h5')
+    #model = SqueezeNet(nb_classes = 5, inputs = (channels, height, width))
+    #X_train_channels_first = np.array(list(map(channels_last_2_channels_first, X_train)))
+    #train(model, X_train_channels_first, y_train, save_model_2_file='model_squeezenet.h5')
+
