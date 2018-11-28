@@ -140,7 +140,7 @@ class DataCollector(object):
             # rospy.loginfo("state: %d", closest_light.state)
             if dist <= 50:
                 self.saveCameraImage(self.asString(closest_light.state))
-            elif 200 <= dist and dist <= 210:
+            elif 200 <= dist:
                 self.saveCameraImage("no_traffic_light")
 
     # TODO: DRY with WaypointUpdater.distance()
