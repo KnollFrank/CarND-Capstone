@@ -4,6 +4,7 @@ from keras.layers import Flatten, Dense, Lambda, MaxPooling2D
 from keras.layers.convolutional import Convolution2D
 from keras.models import Sequential
 from preprocess import get_images_and_measurements, get_input_shape
+from squeezenet import SqueezeNet
 
 def get_X_train_y_train():
     images, measurements = get_images_and_measurements()
@@ -59,6 +60,13 @@ def train(model, X, y, save_model_2_file):
                                verbose=1)
     return history_object
 
+def channels_last_2_channels_first(image):
+    return np.moveaxis(image, -1, 0)
+
 if __name__ == '__main__':
     X_train, y_train = get_X_train_y_train()
-    train(create_model_LeNet(), X_train, y_train, save_model_2_file='model.h5')
+    (height, width, channels) = get_input_shape()
+    # SqueezeNet braucht channels_first
+    model = SqueezeNet(nb_classes = 5, inputs = (channels, height, width))
+    X_train_channels_first = np.array(list(map(channels_last_2_channels_first, X_train)))
+    train(model, X_train_channels_first, y_train, save_model_2_file='model.h5')

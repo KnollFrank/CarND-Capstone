@@ -39,6 +39,9 @@ class TLClassifier(object):
             return TrafficLight.UNKNOWN
 
 
+    def channels_last_2_channels_first(self, image):
+        return np.moveaxis(image, -1, 0)
+
     def get_classification(self, image):
         """Determines the color of the traffic light in the image
 
@@ -50,6 +53,7 @@ class TLClassifier(object):
 
         """
         image_array = preprocess(np.asarray(image))
+        image_array = self.channels_last_2_channels_first(image_array)
         with self.graph.as_default():
             ynew = self.model.predict(image_array[None, :, :, :])
         label = self.encoder.inverse_transform([np.argmax(ynew)])[0]
