@@ -16,6 +16,7 @@ def preprocess(image):
     return resize(image)
 
 
+# TODO: rename to get_input_shape_channels_last() or get_input_shape_height_widht_channels()?
 def get_input_shape():
     width = 800
     height = 600
