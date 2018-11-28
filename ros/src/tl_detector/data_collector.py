@@ -20,6 +20,15 @@ class DataCollector(object):
     def __init__(self):
         rospy.init_node('collect_data')
 
+        self.state = TrafficLight.UNKNOWN
+        self.last_state = TrafficLight.UNKNOWN
+        self.last_wp = -1
+        self.state_count = 0
+
+        self.waypoints_2d = None
+        self.waypoint_tree = None
+        self.img_counter = 0
+
         self.pose = None
         self.waypoints = None
         self.camera_image = None
@@ -51,15 +60,6 @@ class DataCollector(object):
         self.bridge = CvBridge()
         self.light_classifier = TLClassifier()
         self.listener = tf.TransformListener()
-
-        self.state = TrafficLight.UNKNOWN
-        self.last_state = TrafficLight.UNKNOWN
-        self.last_wp = -1
-        self.state_count = 0
-
-        self.waypoints_2d = None
-        self.waypoint_tree = None
-        self.img_counter = 0
 
         rospy.spin()
 
