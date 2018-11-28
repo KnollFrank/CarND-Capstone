@@ -20,7 +20,7 @@ def preprocess(image):
 
 class TLClassifier(object):
     def __init__(self):
-        self.model = load_model('light_classification/model.h5')
+        self.model = load_model('light_classification/model_squeezenet.h5')
         # see: https://stackoverflow.com/questions/47115946/tensor-is-not-an-element-of-this-graph
         self.graph = tf.get_default_graph()
         self.encoder = LabelEncoder()

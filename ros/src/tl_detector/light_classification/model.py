@@ -69,4 +69,4 @@ if __name__ == '__main__':
     # SqueezeNet braucht channels_first
     model = SqueezeNet(nb_classes = 5, inputs = (channels, height, width))
     X_train_channels_first = np.array(list(map(channels_last_2_channels_first, X_train)))
-    train(model, X_train_channels_first, y_train, save_model_2_file='model.h5')
+    train(model, X_train_channels_first, y_train, save_model_2_file='model_squeezenet.h5')
