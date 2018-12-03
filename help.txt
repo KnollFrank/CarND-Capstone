@@ -1,0 +1,25 @@
+alle Kombinationen ausprobieren:
+- Dog-Breed-Classifier-TopModel: https://github.com/KnollFrank/MLND-Dog-Breed-Classifier/blob/master/dog_app.ipynb
+- kleines TopModel
+
+- VGG16
+- ResNet
+- weitere Architekturen aus https://keras.io/applications/
+
+- ImageNet
+- COCO (https://github.com/fizyr/keras-retinanet/blob/master/README.md)
+
+mehr Trainingsdaten
+
+versuche folgendes um Ampeln zu erkennen:
+- Bildverarbeitung
+- Tensorflow Object Detection API (https://github.com/tensorflow/models/tree/master/research/object_detection)
+- 000: Dog-Breed-Classifier-TopModel, VGG16,  ImageNet: 
+- 001: Dog-Breed-Classifier-TopModel, VGG16,  COCO:
+- 010: Dog-Breed-Classifier-TopModel, ResNet, ImageNet:
+- 011: Dog-Breed-Classifier-TopModel, ResNet, COCO:
++ 100: kleines TopModel,              VGG16,  ImageNet: :-(
+- 101: kleines TopModel,              VGG16,  COCO:
+- 110: kleines TopModel,              ResNet, ImageNet:
+- 111: kleines TopModel,              ResNet, COCO:
+
