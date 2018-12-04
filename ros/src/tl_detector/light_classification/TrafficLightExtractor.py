@@ -28,6 +28,7 @@ class TrafficLightExtractor:
                 StrictVersion(tf.__version__)) + ' to v1.9.* or later!')
 
         self.PATH_TO_FROZEN_GRAPH = '/home/frankknoll/udacity/SDCND/models/research/object_detection/rfcn_resnet101_coco_2018_01_28//frozen_inference_graph.pb'
+        self.detection_graph = self.load_model()
 
     def load_model(self):
         detection_graph = tf.Graph()
@@ -90,7 +91,7 @@ class TrafficLightExtractor:
                     output_dict['detection_masks'] = output_dict['detection_masks'][0]
         return output_dict
 
-    def bla(self, TEST_IMAGE_PATHS, dst, detection_graph):
+    def bla(self, TEST_IMAGE_PATHS, dst):
         for i, image_path in enumerate(TEST_IMAGE_PATHS):
             image = Image.open(image_path)
             # the array based representation of the image will be used later in order to prepare the
@@ -99,17 +100,17 @@ class TrafficLightExtractor:
             # Expand dimensions since the model expects images to have shape: [1, None, None, 3]
             image_np_expanded = np.expand_dims(image_np, axis=0)
             # Actual detection.
-            output_dict = self.run_inference_for_single_image(image_np, detection_graph)
+            output_dict = self.run_inference_for_single_image(image_np, self.detection_graph)
             result = Image.fromarray(image_np)
-            # result.save("/tmp/pics/no_traffic_light/tst" + str(i) + ".jpg")
-            box = output_dict['detection_boxes'][0]
             (im_width, im_height) = image.size
-            region = image.crop(
-                (int(box[1] * im_width), int(box[0] * im_height), int(box[3] * im_width), int(box[2] * im_height)))
-            region.save(dst + '/1.jpg')
+            for j, box in enumerate(output_dict['detection_boxes']):
+                if output_dict['detection_classes'][j] == 10:
+                    region = image.crop(
+                        (int(box[1] * im_width), int(box[0] * im_height), int(box[3] * im_width),
+                         int(box[2] * im_height)))
+                    region.save(dst + '/' + str(i) + str(j) + '.jpg')
 
     def extractTrafficLights(self, srcDir, dstDir):
         mkdir(dstDir + '/green')
-        detection_graph = self.load_model()
         TEST_IMAGE_PATHS = glob.glob(srcDir + "/green/*")
-        self.bla(TEST_IMAGE_PATHS, dstDir + '/green', detection_graph)
+        self.bla(TEST_IMAGE_PATHS, dstDir + '/green')
