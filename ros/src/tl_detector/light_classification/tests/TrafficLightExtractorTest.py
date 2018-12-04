@@ -21,14 +21,14 @@ from PIL import Image
 class TrafficLightExtractorTest(TestCase):
 
     def setUp(self):
-        # Create a temporary directory
         self.test_dir = tempfile.mkdtemp()
 
     def tearDown(self):
-        # Remove the directory after the test
         shutil.rmtree(self.test_dir)
 
     def test_extract_traffic_lights(self):
         trafficLightExtractor = TrafficLightExtractor()
         trafficLightExtractor.extractTrafficLights(srcDir='../images', dstDir=self.test_dir)
-        self.assertTrue(os.path.isfile('../images/green/img_0175_green.jpg'))
+        # self.assertTrue(os.path.isfile(self.test_dir + '/green/1.jpg'))
+        DIR = self.test_dir + '/green'
+        self.assertEqual(len([name for name in os.listdir(DIR) if os.path.isfile(os.path.join(DIR, name))]), 3)

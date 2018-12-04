@@ -12,7 +12,8 @@ import cv2
 import yaml
 from scipy.spatial import KDTree
 import math
-import os, errno
+
+from light_classification.utils import mkdir
 
 STATE_COUNT_THRESHOLD = 3
 
@@ -39,12 +40,12 @@ class DataCollector(object):
             return
 
         self.image_dir = "light_classification/images"
-        self.mkdir(self.image_dir)
-        self.mkdir(self.image_dir + "/red")
-        self.mkdir(self.image_dir + "/green")
-        self.mkdir(self.image_dir + "/yellow")
-        self.mkdir(self.image_dir + "/unknown")
-        self.mkdir(self.image_dir + "/no_traffic_light")
+        mkdir(self.image_dir)
+        mkdir(self.image_dir + "/red")
+        mkdir(self.image_dir + "/green")
+        mkdir(self.image_dir + "/yellow")
+        mkdir(self.image_dir + "/unknown")
+        mkdir(self.image_dir + "/no_traffic_light")
 
         sub1 = rospy.Subscriber('/current_pose', PoseStamped, self.pose_cb)
         sub2 = rospy.Subscriber('/base_waypoints', Lane, self.waypoints_cb)
@@ -62,13 +63,6 @@ class DataCollector(object):
         self.listener = tf.TransformListener()
 
         rospy.spin()
-
-    def mkdir(self, path):
-        try:
-            os.makedirs(path)
-        except OSError as e:
-            if e.errno != errno.EEXIST:
-                raise
 
     def pose_cb(self, msg):
         self.pose = msg

@@ -1,4 +1,6 @@
+from utils import mkdir
+
 class TrafficLightExtractor:
 
     def extractTrafficLights(self, srcDir, dstDir):
-        pass
+        mkdir(dstDir + '/green')
