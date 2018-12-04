@@ -13,7 +13,7 @@ import yaml
 from scipy.spatial import KDTree
 import math
 
-from light_classification.utils import mkdir
+from light_classification.utilities import mkdir
 
 STATE_COUNT_THRESHOLD = 3
 
