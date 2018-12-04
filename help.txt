@@ -12,8 +12,8 @@ alle Kombinationen ausprobieren:
 mehr Trainingsdaten
 
 versuche folgendes um Ampeln zu erkennen:
-- Bildverarbeitung
-- Tensorflow Object Detection API (https://github.com/tensorflow/models/tree/master/research/object_detection)
+- erkenne Ampeln mit Tensorflow Object Detection API (https://github.com/tensorflow/models/tree/master/research/object_detection): :-)
+  - erkenne die Ampelfarbe mit Bildverarbeitung oder machine learning.
 - 000: Dog-Breed-Classifier-TopModel, VGG16,  ImageNet: 
 - 001: Dog-Breed-Classifier-TopModel, VGG16,  COCO:
 - 010: Dog-Breed-Classifier-TopModel, ResNet, ImageNet:
@@ -23,3 +23,6 @@ versuche folgendes um Ampeln zu erkennen:
 - 110: kleines TopModel,              ResNet, ImageNet:
 - 111: kleines TopModel,              ResNet, COCO:
 
+Tensorflow Object Detection API Workflow:
+- alle Ampeln aus den Simulatorbildern mit der Object Detection API extrahieren, labeln und speichern.
+- CNN auf diese extrahierten und gelabelten Bilder anwenden
