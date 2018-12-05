@@ -19,52 +19,32 @@ sys.path.append('/home/frankknoll/udacity/SDCND/models/research')
 from object_detection.utils import ops as utils_ops
 from object_detection.utils import label_map_util
 
+if StrictVersion(tf.__version__) < StrictVersion('1.9.0'):
+    raise ImportError('Please upgrade your TensorFlow installation from ' + str(
+        StrictVersion(tf.__version__)) + ' to v1.9.* or later!')
+
+PATH_TO_FROZEN_GRAPH = '/home/frankknoll/udacity/SDCND/models/research/object_detection/rfcn_resnet101_coco_2018_01_28/frozen_inference_graph.pb'
+
+
+def load_model():
+    detection_graph = tf.Graph()
+    with detection_graph.as_default():
+        od_graph_def = tf.GraphDef()
+        with tf.gfile.GFile(PATH_TO_FROZEN_GRAPH, 'rb') as fid:
+            serialized_graph = fid.read()
+            od_graph_def.ParseFromString(serialized_graph)
+            tf.import_graph_def(od_graph_def, name='')
+    return detection_graph
+
+
+detection_graph = load_model()
+
 
 # adapted from https://github.com/tensorflow/models/blob/master/research/object_detection/object_detection_tutorial.ipynb
-class TrafficLightExtractor:
+class TrafficLightProvider:
 
     def __init__(self):
-        if StrictVersion(tf.__version__) < StrictVersion('1.9.0'):
-            raise ImportError('Please upgrade your TensorFlow installation from ' + str(
-                StrictVersion(tf.__version__)) + ' to v1.9.* or later!')
-
-        self.PATH_TO_FROZEN_GRAPH = '/home/frankknoll/udacity/SDCND/models/research/object_detection/rfcn_resnet101_coco_2018_01_28/frozen_inference_graph.pb'
-        self.detection_graph = self.load_model()
-
-    def load_model(self):
-        detection_graph = tf.Graph()
-        with detection_graph.as_default():
-            od_graph_def = tf.GraphDef()
-            with tf.gfile.GFile(self.PATH_TO_FROZEN_GRAPH, 'rb') as fid:
-                serialized_graph = fid.read()
-                od_graph_def.ParseFromString(serialized_graph)
-                tf.import_graph_def(od_graph_def, name='')
-        return detection_graph
-
-    def extractAndSaveTrafficLights(self, srcDir, dstDir):
-        self.extractAndSaveTrafficLights4Color('red', srcDir, dstDir)
-        self.extractAndSaveTrafficLights4Color('yellow', srcDir, dstDir)
-        self.extractAndSaveTrafficLights4Color('green', srcDir, dstDir)
-
-    def extractAndSaveTrafficLights4Color(self, color, srcDir, dstDir):
-        mkdir(self.getDir4Color(dstDir, color))
-        self.detectAndSaveTrafficLights(self.getFiles4Color(srcDir, color),
-                                        self.getDir4Color(dstDir, color))
-
-    def getFiles4Color(self, dir, color):
-        return glob.glob(self.getDir4Color(dir, color) + '/*')
-
-    def getDir4Color(self, dir, color):
-        return dir + '/' + color
-
-    def detectAndSaveTrafficLights(self, imagePaths, dst):
-        for imagePath in imagePaths:
-            self.detectAndSaveTrafficLightsWithinImage(imagePath, dst)
-
-    def detectAndSaveTrafficLightsWithinImage(self, imagePath, dst):
-        image = Image.open(imagePath)
-        output_dict = self.detectTrafficLightsWithin(image)
-        self.saveTrafficLights(image, output_dict['detection_boxes'], output_dict['detection_classes'], dst)
+        pass
 
     def detectTrafficLightsWithin(self, image):
         return self.run_inference_for_single_image(self.load_image_into_numpy_array(image))
@@ -75,7 +55,7 @@ class TrafficLightExtractor:
             (im_height, im_width, 3)).astype(np.uint8)
 
     def run_inference_for_single_image(self, image):
-        with self.detection_graph.as_default():
+        with detection_graph.as_default():
             with tf.Session() as sess:
                 # Get handles to input and output tensors
                 ops = tf.get_default_graph().get_operations()
@@ -114,6 +94,38 @@ class TrafficLightExtractor:
                 if 'detection_masks' in output_dict:
                     output_dict['detection_masks'] = output_dict['detection_masks'][0]
         return output_dict
+
+
+
+class TrafficLightExtractor:
+
+    def __init__(self):
+        pass
+
+    def extractAndSaveTrafficLights(self, srcDir, dstDir):
+        self.extractAndSaveTrafficLights4Color('red', srcDir, dstDir)
+        self.extractAndSaveTrafficLights4Color('yellow', srcDir, dstDir)
+        self.extractAndSaveTrafficLights4Color('green', srcDir, dstDir)
+
+    def extractAndSaveTrafficLights4Color(self, color, srcDir, dstDir):
+        mkdir(self.getDir4Color(dstDir, color))
+        self.detectAndSaveTrafficLights(self.getFiles4Color(srcDir, color),
+                                        self.getDir4Color(dstDir, color))
+
+    def getFiles4Color(self, dir, color):
+        return glob.glob(self.getDir4Color(dir, color) + '/*')
+
+    def getDir4Color(self, dir, color):
+        return dir + '/' + color
+
+    def detectAndSaveTrafficLights(self, imagePaths, dst):
+        for imagePath in imagePaths:
+            self.detectAndSaveTrafficLightsWithinImage(imagePath, dst)
+
+    def detectAndSaveTrafficLightsWithinImage(self, imagePath, dst):
+        image = Image.open(imagePath)
+        output_dict = TrafficLightProvider().detectTrafficLightsWithin(image)
+        self.saveTrafficLights(image, output_dict['detection_boxes'], output_dict['detection_classes'], dst)
 
     def saveTrafficLights(self, image, boxes, classes, dst):
         for i, box in enumerate(boxes):
