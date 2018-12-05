@@ -39,7 +39,7 @@ class DataCollector(object):
         if active == 'no':
             return
 
-        self.image_dir = "light_classification/images"
+        self.image_dir = "light_classification/data/simulator_images"
         mkdir(self.image_dir)
         mkdir(self.image_dir + "/red")
         mkdir(self.image_dir + "/green")

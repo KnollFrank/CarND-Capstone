@@ -145,3 +145,8 @@ class TrafficLightExtractor:
         right = box[3] * width
         lower = box[2] * height
         return map(int, (left, upper, right, lower))
+
+
+if __name__ == '__main__':
+    trafficLightExtractor = TrafficLightExtractor()
+    trafficLightExtractor.extractAndSaveTrafficLights(srcDir='data/simulator_images', dstDir='data/trafficlight_images')
