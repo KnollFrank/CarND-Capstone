@@ -50,13 +50,13 @@ class TrafficLightExtractor:
         self.detectAndSaveTrafficLights(glob.glob(srcDir + '/' + directory + '/*'), dstDir + '/' + directory)
 
     def detectAndSaveTrafficLights(self, imagePaths, dst):
-        for i, image_path in enumerate(imagePaths):
-            self.detectAndSaveTrafficLightsWithinImage(dst, i, image_path)
+        for i, imagePath in enumerate(imagePaths):
+            self.detectAndSaveTrafficLightsWithinImage(imagePath, dst, i)
 
-    def detectAndSaveTrafficLightsWithinImage(self, dst, i, imagePath):
+    def detectAndSaveTrafficLightsWithinImage(self, imagePath, dst, i):
         image = Image.open(imagePath)
         output_dict = self.detectTrafficLightsWithin(image)
-        self.saveTrafficLights(output_dict['detection_boxes'], output_dict['detection_classes'], dst, i, image)
+        self.saveTrafficLights(image, output_dict['detection_boxes'], output_dict['detection_classes'], dst, i)
 
     def detectTrafficLightsWithin(self, image):
         return self.run_inference_for_single_image(self.load_image_into_numpy_array(image))
@@ -107,7 +107,7 @@ class TrafficLightExtractor:
                     output_dict['detection_masks'] = output_dict['detection_masks'][0]
         return output_dict
 
-    def saveTrafficLights(self, boxes, classes, dst, i, image):
+    def saveTrafficLights(self, image, boxes, classes, dst, i):
         (im_width, im_height) = image.size
         for j, box in enumerate(boxes):
             # TODO: isTrafficLight() muß an höherer Stelle im Callgraph ausgeführt werden.
