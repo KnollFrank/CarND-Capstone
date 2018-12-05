@@ -116,8 +116,11 @@ class TrafficLightExtractor:
             self.saveTrafficLight(image, box, classes[i], self.createFileName(dst, image, i + 1))
 
     def createFileName(self, dst, image, i):
-        filename, extension = os.path.splitext(os.path.basename(image.filename))
-        return dst + '/' + filename + '_' + str(i) + extension
+        return dst + '/' + self.getNumberedFileName(image.filename, i)
+
+    def getNumberedFileName(self, filename, i):
+        root, extension = os.path.splitext(os.path.basename(filename))
+        return root + '_' + str(i) + extension
 
     def saveTrafficLight(self, image, box, clazz, filename):
         # TODO: isTrafficLight() muß an höherer Stelle im Callgraph ausgeführt werden.
