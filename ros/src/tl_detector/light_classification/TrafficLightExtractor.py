@@ -42,8 +42,9 @@ class TrafficLightExtractor:
         return detection_graph
 
     def extractTrafficLights(self, srcDir, dstDir):
-        self.extractTrafficLightsForColor('green', srcDir, dstDir)
         self.extractTrafficLightsForColor('red', srcDir, dstDir)
+        self.extractTrafficLightsForColor('yellow', srcDir, dstDir)
+        self.extractTrafficLightsForColor('green', srcDir, dstDir)
 
     def extractTrafficLightsForColor(self, color, srcDir, dstDir):
         mkdir(self.getDir4Color(dstDir, color))
