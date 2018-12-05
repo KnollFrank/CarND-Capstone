@@ -41,6 +41,23 @@ class TrafficLightExtractor:
                 tf.import_graph_def(od_graph_def, name='')
         return detection_graph
 
+    def extractTrafficLights(self, srcDir, dstDir):
+        mkdir(dstDir + '/green')
+        imagePaths = glob.glob(srcDir + "/green/*")
+        self.detectAndSaveTrafficLights(imagePaths, dstDir + '/green')
+
+    def detectAndSaveTrafficLights(self, imagePaths, dst):
+        for i, image_path in enumerate(imagePaths):
+            self.detectAndSaveTrafficLightsWithinImage(dst, i, image_path)
+
+    def detectAndSaveTrafficLightsWithinImage(self, dst, i, imagePath):
+        image = Image.open(imagePath)
+        output_dict = self.detectTrafficLightsWithin(image)
+        self.saveTrafficLights(output_dict['detection_boxes'], output_dict['detection_classes'], dst, i, image)
+
+    def detectTrafficLightsWithin(self, image):
+        return self.run_inference_for_single_image(self.load_image_into_numpy_array(image))
+
     def load_image_into_numpy_array(self, image):
         (im_width, im_height) = image.size
         return np.array(image.getdata()).reshape(
@@ -87,21 +104,10 @@ class TrafficLightExtractor:
                     output_dict['detection_masks'] = output_dict['detection_masks'][0]
         return output_dict
 
-    def detectAndSaveTrafficLights(self, imagePaths, dst):
-        for i, image_path in enumerate(imagePaths):
-            self.detectAndSaveTrafficLightsWithinImage(dst, i, image_path)
-
-    def detectAndSaveTrafficLightsWithinImage(self, dst, i, imagePath):
-        image = Image.open(imagePath)
-        output_dict = self.detectTrafficLightsWithin(image)
-        self.saveTrafficLights(output_dict['detection_boxes'], output_dict['detection_classes'], dst, i, image)
-
-    def detectTrafficLightsWithin(self, image):
-        return self.run_inference_for_single_image(self.load_image_into_numpy_array(image))
-
     def saveTrafficLights(self, boxes, classes, dst, i, image):
         (im_width, im_height) = image.size
         for j, box in enumerate(boxes):
+            # TODO: isTrafficLight() muß an höherer Stelle im Callgraph ausgeführt werden.
             if self.isTrafficLight(classes[j]):
                 trafficLight = image.crop(
                     (int(box[1] * im_width), int(box[0] * im_height), int(box[3] * im_width),
@@ -110,8 +116,3 @@ class TrafficLightExtractor:
 
     def isTrafficLight(self, detectionClass):
         return detectionClass == 10
-
-    def extractTrafficLights(self, srcDir, dstDir):
-        mkdir(dstDir + '/green')
-        imagePaths = glob.glob(srcDir + "/green/*")
-        self.detectAndSaveTrafficLights(imagePaths, dstDir + '/green')
