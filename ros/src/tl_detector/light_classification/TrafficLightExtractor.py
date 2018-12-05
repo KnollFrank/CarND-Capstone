@@ -28,7 +28,7 @@ class TrafficLightExtractor:
             raise ImportError('Please upgrade your TensorFlow installation from ' + str(
                 StrictVersion(tf.__version__)) + ' to v1.9.* or later!')
 
-        self.PATH_TO_FROZEN_GRAPH = '/home/frankknoll/udacity/SDCND/models/research/object_detection/rfcn_resnet101_coco_2018_01_28//frozen_inference_graph.pb'
+        self.PATH_TO_FROZEN_GRAPH = '/home/frankknoll/udacity/SDCND/models/research/object_detection/rfcn_resnet101_coco_2018_01_28/frozen_inference_graph.pb'
         self.detection_graph = self.load_model()
 
     def load_model(self):
