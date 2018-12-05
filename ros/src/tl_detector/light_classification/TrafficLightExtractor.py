@@ -87,14 +87,14 @@ class TrafficLightExtractor:
                     output_dict['detection_masks'] = output_dict['detection_masks'][0]
         return output_dict
 
-    def bla(self, imagePaths, dst):
+    def detectAndSaveTrafficLights(self, imagePaths, dst):
         for i, image_path in enumerate(imagePaths):
-            image = Image.open(image_path)
-            image_np = self.load_image_into_numpy_array(image)
-            output_dict = self.run_inference_for_single_image(image_np)
-            detection_boxes = output_dict['detection_boxes']
-            detection_classes = output_dict['detection_classes']
-            self.saveTrafficLights(detection_boxes, detection_classes, dst, i, image)
+            self.detectAndSaveTrafficLights2(dst, i, image_path)
+
+    def detectAndSaveTrafficLights2(self, dst, i, image_path):
+        image = Image.open(image_path)
+        output_dict = self.run_inference_for_single_image(self.load_image_into_numpy_array(image))
+        self.saveTrafficLights(output_dict['detection_boxes'], output_dict['detection_classes'], dst, i, image)
 
     def saveTrafficLights(self, detection_boxes, detection_classes, dst, i, image):
         (im_width, im_height) = image.size
@@ -108,4 +108,4 @@ class TrafficLightExtractor:
     def extractTrafficLights(self, srcDir, dstDir):
         mkdir(dstDir + '/green')
         imagePaths = glob.glob(srcDir + "/green/*")
-        self.bla(imagePaths, dstDir + '/green')
+        self.detectAndSaveTrafficLights(imagePaths, dstDir + '/green')
