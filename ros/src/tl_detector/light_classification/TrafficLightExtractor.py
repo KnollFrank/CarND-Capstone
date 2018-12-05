@@ -89,21 +89,27 @@ class TrafficLightExtractor:
 
     def detectAndSaveTrafficLights(self, imagePaths, dst):
         for i, image_path in enumerate(imagePaths):
-            self.detectAndSaveTrafficLights2(dst, i, image_path)
+            self.detectAndSaveTrafficLightsWithinImage(dst, i, image_path)
 
-    def detectAndSaveTrafficLights2(self, dst, i, image_path):
-        image = Image.open(image_path)
-        output_dict = self.run_inference_for_single_image(self.load_image_into_numpy_array(image))
+    def detectAndSaveTrafficLightsWithinImage(self, dst, i, imagePath):
+        image = Image.open(imagePath)
+        output_dict = self.detectTrafficLightsWithin(image)
         self.saveTrafficLights(output_dict['detection_boxes'], output_dict['detection_classes'], dst, i, image)
 
-    def saveTrafficLights(self, detection_boxes, detection_classes, dst, i, image):
+    def detectTrafficLightsWithin(self, image):
+        return self.run_inference_for_single_image(self.load_image_into_numpy_array(image))
+
+    def saveTrafficLights(self, boxes, classes, dst, i, image):
         (im_width, im_height) = image.size
-        for j, box in enumerate(detection_boxes):
-            if detection_classes[j] == 10:
+        for j, box in enumerate(boxes):
+            if self.isTrafficLight(classes[j]):
                 trafficLight = image.crop(
                     (int(box[1] * im_width), int(box[0] * im_height), int(box[3] * im_width),
                      int(box[2] * im_height)))
                 trafficLight.save(dst + '/' + str(i) + str(j) + '.jpg')
+
+    def isTrafficLight(self, detectionClass):
+        return detectionClass == 10
 
     def extractTrafficLights(self, srcDir, dstDir):
         mkdir(dstDir + '/green')
