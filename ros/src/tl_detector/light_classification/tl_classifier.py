@@ -7,9 +7,10 @@ import cv2
 import numpy as np
 from sklearn.preprocessing import LabelEncoder
 import tensorflow as tf
-from keras.preprocessing import image                  
+from keras.preprocessing import image
 
 factor = 1.0 / 4.0
+
 
 def resize(image):
     img_height, img_width = 150, 150
@@ -40,11 +41,10 @@ class TLClassifier(object):
         if stateStr == "no_traffic_light":
             return TrafficLight.UNKNOWN
 
-
     def channels_last_2_channels_first(self, image):
         return np.moveaxis(image, -1, 0)
 
-    def path_to_tensor(self,  img_path):
+    def path_to_tensor(self, img_path):
         # loads RGB image as PIL.Image.Image type
         img = image.load_img(img_path, target_size=(img_height, img_width))
         # convert PIL.Image.Image type to 3D tensor with shape (224, 224, 3)
@@ -70,4 +70,3 @@ class TLClassifier(object):
         label = labels[np.argmax(ynew)]
         rospy.loginfo("label: %s", label)
         return self.asTrafficLightState(label)
-

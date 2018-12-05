@@ -25,4 +25,6 @@ versuche folgendes um Ampeln zu erkennen:
 
 Tensorflow Object Detection API Workflow:
 + alle Ampeln aus den Simulatorbildern mit der Object Detection API extrahieren, labeln und speichern.
-- irgendein CNN auf diese extrahierten und gelabelten Bilder anwenden
+- irgendein CNN auf diese extrahierten und gelabelten Bilder anwenden (siehe /home/frankknoll/udacity/SDCND/tmp/transfer_learning_test/transfer_learning.ipynb)
+
+frankknoll@frankknoll-XPS-13-9370:~/udacity/SDCND/CarND-Capstone$ conda env update carnd -f requirements.txt
