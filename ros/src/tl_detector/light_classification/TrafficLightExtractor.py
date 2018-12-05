@@ -108,14 +108,25 @@ class TrafficLightExtractor:
         return output_dict
 
     def saveTrafficLights(self, image, boxes, classes, dst, i):
-        (im_width, im_height) = image.size
         for j, box in enumerate(boxes):
-            # TODO: isTrafficLight() muß an höherer Stelle im Callgraph ausgeführt werden.
-            if self.isTrafficLight(classes[j]):
-                trafficLight = image.crop(
-                    (int(box[1] * im_width), int(box[0] * im_height), int(box[3] * im_width),
-                     int(box[2] * im_height)))
-                trafficLight.save(dst + '/' + str(i) + str(j) + '.jpg')
+            self.saveTrafficLight(image, box, classes[j], dst, i, j)
 
-    def isTrafficLight(self, detectionClass):
-        return detectionClass == 10
+    def saveTrafficLight(self, image, box, clazz, dst, i, j):
+        # TODO: isTrafficLight() muß an höherer Stelle im Callgraph ausgeführt werden.
+        if self.isTrafficLight(clazz):
+            trafficLight = self.extractTrafficLight(box, image)
+            trafficLight.save(dst + '/' + str(i) + str(j) + '.jpg')
+
+    def isTrafficLight(self, clazz):
+        return clazz == 10
+
+    def extractTrafficLight(self, box, image):
+        return image.crop(self.adaptBox2Image(box, image))
+
+    def adaptBox2Image(self, box, image):
+        width, height = image.size
+        left = int(box[1] * width)
+        upper = int(box[0] * height)
+        right = int(box[3] * width)
+        lower = int(box[2] * height)
+        return left, upper, right, lower
