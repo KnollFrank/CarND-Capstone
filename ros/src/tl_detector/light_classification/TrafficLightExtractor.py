@@ -43,8 +43,9 @@ class TrafficLightExtractor:
 
     def extractTrafficLights(self, srcDir, dstDir):
         mkdir(dstDir + '/green')
-        imagePaths = glob.glob(srcDir + "/green/*")
-        self.detectAndSaveTrafficLights(imagePaths, dstDir + '/green')
+        mkdir(dstDir + '/red')
+        self.detectAndSaveTrafficLights(glob.glob(srcDir + "/green/*"), dstDir + '/green')
+        self.detectAndSaveTrafficLights(glob.glob(srcDir + "/red/*"), dstDir + '/red')
 
     def detectAndSaveTrafficLights(self, imagePaths, dst):
         for i, image_path in enumerate(imagePaths):
