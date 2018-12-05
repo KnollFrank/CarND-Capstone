@@ -17,7 +17,7 @@ class TrafficLightExtractorTest(TestCase):
         trafficLightExtractor = TrafficLightExtractor()
 
         # WHEN
-        trafficLightExtractor.extractTrafficLights(srcDir='../images', dstDir=self.test_dir)
+        trafficLightExtractor.extractAndSaveTrafficLights(srcDir='../images', dstDir=self.test_dir)
 
         # THEN
         # check red

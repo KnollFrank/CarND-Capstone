@@ -41,12 +41,12 @@ class TrafficLightExtractor:
                 tf.import_graph_def(od_graph_def, name='')
         return detection_graph
 
-    def extractTrafficLights(self, srcDir, dstDir):
-        self.extractTrafficLightsForColor('red', srcDir, dstDir)
-        self.extractTrafficLightsForColor('yellow', srcDir, dstDir)
-        self.extractTrafficLightsForColor('green', srcDir, dstDir)
+    def extractAndSaveTrafficLights(self, srcDir, dstDir):
+        self.extractAndSaveTrafficLightsForColor('red', srcDir, dstDir)
+        self.extractAndSaveTrafficLightsForColor('yellow', srcDir, dstDir)
+        self.extractAndSaveTrafficLightsForColor('green', srcDir, dstDir)
 
-    def extractTrafficLightsForColor(self, color, srcDir, dstDir):
+    def extractAndSaveTrafficLightsForColor(self, color, srcDir, dstDir):
         mkdir(self.getDir4Color(dstDir, color))
         self.detectAndSaveTrafficLights(glob.glob(self.getDir4Color(srcDir, color) + '/*'),
                                         self.getDir4Color(dstDir, color))
