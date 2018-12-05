@@ -19,4 +19,7 @@ class TrafficLightExtractorTest(TestCase):
         self.assertEqual(self.getNumberOfFilesContainedIn(self.test_dir + '/red'), 3)
 
     def getNumberOfFilesContainedIn(self, directory):
-        return len([name for name in os.listdir(directory) if os.path.isfile(os.path.join(directory, name))])
+        return len(self.getFilesContainedIn(directory))
+
+    def getFilesContainedIn(self, directory):
+        return [name for name in os.listdir(directory) if os.path.isfile(os.path.join(directory, name))]
