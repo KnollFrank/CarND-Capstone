@@ -45,18 +45,22 @@ class TrafficLightExtractor:
         self.extractTrafficLightsForColor('green', srcDir, dstDir)
         self.extractTrafficLightsForColor('red', srcDir, dstDir)
 
-    def extractTrafficLightsForColor(self, directory, srcDir, dstDir):
-        mkdir(dstDir + '/' + directory)
-        self.detectAndSaveTrafficLights(glob.glob(srcDir + '/' + directory + '/*'), dstDir + '/' + directory)
+    def extractTrafficLightsForColor(self, color, srcDir, dstDir):
+        mkdir(self.getDir4Color(dstDir, color))
+        self.detectAndSaveTrafficLights(glob.glob(self.getDir4Color(srcDir, color) + '/*'),
+                                        self.getDir4Color(dstDir, color))
+
+    def getDir4Color(self, dir, color):
+        return dir + '/' + color
 
     def detectAndSaveTrafficLights(self, imagePaths, dst):
-        for i, imagePath in enumerate(imagePaths):
-            self.detectAndSaveTrafficLightsWithinImage(imagePath, dst, i)
+        for imagePath in imagePaths:
+            self.detectAndSaveTrafficLightsWithinImage(imagePath, dst)
 
-    def detectAndSaveTrafficLightsWithinImage(self, imagePath, dst, i):
+    def detectAndSaveTrafficLightsWithinImage(self, imagePath, dst):
         image = Image.open(imagePath)
         output_dict = self.detectTrafficLightsWithin(image)
-        self.saveTrafficLights(image, output_dict['detection_boxes'], output_dict['detection_classes'], dst, i)
+        self.saveTrafficLights(image, output_dict['detection_boxes'], output_dict['detection_classes'], dst)
 
     def detectTrafficLightsWithin(self, image):
         return self.run_inference_for_single_image(self.load_image_into_numpy_array(image))
@@ -107,15 +111,19 @@ class TrafficLightExtractor:
                     output_dict['detection_masks'] = output_dict['detection_masks'][0]
         return output_dict
 
-    def saveTrafficLights(self, image, boxes, classes, dst, i):
+    def saveTrafficLights(self, image, boxes, classes, dst):
         for j, box in enumerate(boxes):
-            self.saveTrafficLight(image, box, classes[j], dst, i, j)
+            self.saveTrafficLight(image, box, classes[j], dst, j)
 
-    def saveTrafficLight(self, image, box, clazz, dst, i, j):
+    def saveTrafficLight(self, image, box, clazz, dst, j):
         # TODO: isTrafficLight() muß an höherer Stelle im Callgraph ausgeführt werden.
         if self.isTrafficLight(clazz):
             trafficLight = self.extractTrafficLight(box, image)
-            trafficLight.save(dst + '/' + str(i) + str(j) + '.jpg')
+            # TODO: refactor
+            filename_w_ext = os.path.basename(image.filename)
+            filename, file_extension = os.path.splitext(filename_w_ext)
+            jpg_ = dst + '/' + filename + '_' + str(j + 1) + file_extension
+            trafficLight.save(jpg_)
 
     def isTrafficLight(self, clazz):
         return clazz == 10

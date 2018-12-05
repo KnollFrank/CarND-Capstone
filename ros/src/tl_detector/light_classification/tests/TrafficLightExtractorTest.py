@@ -13,13 +13,20 @@ class TrafficLightExtractorTest(TestCase):
         shutil.rmtree(self.test_dir)
 
     def test_extract_traffic_lights(self):
+        # GIVEN
         trafficLightExtractor = TrafficLightExtractor()
+
+        # WHEN
         trafficLightExtractor.extractTrafficLights(srcDir='../images', dstDir=self.test_dir)
-        self.assertEqual(self.getNumberOfFilesContainedIn(self.test_dir + '/green'), 5)
-        self.assertEqual(self.getNumberOfFilesContainedIn(self.test_dir + '/red'), 3)
 
-    def getNumberOfFilesContainedIn(self, directory):
-        return len(self.getFilesContainedIn(directory))
+        # THEN
+        self.assertTrue(os.path.isfile(os.path.join(self.test_dir + '/green', 'img_0175_green_1.jpg')))
+        self.assertTrue(os.path.isfile(os.path.join(self.test_dir + '/green', 'img_0175_green_2.jpg')))
 
-    def getFilesContainedIn(self, directory):
-        return [name for name in os.listdir(directory) if os.path.isfile(os.path.join(directory, name))]
+        self.assertTrue(os.path.isfile(os.path.join(self.test_dir + '/green', 'img_0475_green_1.jpg')))
+        self.assertTrue(os.path.isfile(os.path.join(self.test_dir + '/green', 'img_0475_green_2.jpg')))
+        self.assertTrue(os.path.isfile(os.path.join(self.test_dir + '/green', 'img_0475_green_3.jpg')))
+
+        self.assertTrue(os.path.isfile(os.path.join(self.test_dir + '/red', 'img_0001_red_1.jpg')))
+        self.assertTrue(os.path.isfile(os.path.join(self.test_dir + '/red', 'img_0001_red_2.jpg')))
+        self.assertTrue(os.path.isfile(os.path.join(self.test_dir + '/red', 'img_0001_red_3.jpg')))
