@@ -20,6 +20,7 @@ from object_detection.utils import ops as utils_ops
 from object_detection.utils import label_map_util
 
 
+# adapted from https://github.com/tensorflow/models/blob/master/research/object_detection/object_detection_tutorial.ipynb
 class TrafficLightExtractor:
 
     def __init__(self):
@@ -45,8 +46,8 @@ class TrafficLightExtractor:
         return np.array(image.getdata()).reshape(
             (im_height, im_width, 3)).astype(np.uint8)
 
-    def run_inference_for_single_image(self, image, graph):
-        with graph.as_default():
+    def run_inference_for_single_image(self, image):
+        with self.detection_graph.as_default():
             with tf.Session() as sess:
                 # Get handles to input and output tensors
                 ops = tf.get_default_graph().get_operations()
@@ -94,13 +95,11 @@ class TrafficLightExtractor:
     def bla(self, TEST_IMAGE_PATHS, dst):
         for i, image_path in enumerate(TEST_IMAGE_PATHS):
             image = Image.open(image_path)
-            # the array based representation of the image will be used later in order to prepare the
-            # result image with boxes and labels on it.
             image_np = self.load_image_into_numpy_array(image)
             # Expand dimensions since the model expects images to have shape: [1, None, None, 3]
             image_np_expanded = np.expand_dims(image_np, axis=0)
             # Actual detection.
-            output_dict = self.run_inference_for_single_image(image_np, self.detection_graph)
+            output_dict = self.run_inference_for_single_image(image_np)
             result = Image.fromarray(image_np)
             (im_width, im_height) = image.size
             for j, box in enumerate(output_dict['detection_boxes']):
