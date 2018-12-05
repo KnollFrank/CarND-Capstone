@@ -92,13 +92,18 @@ class TrafficLightExtractor:
             image = Image.open(image_path)
             image_np = self.load_image_into_numpy_array(image)
             output_dict = self.run_inference_for_single_image(image_np)
-            (im_width, im_height) = image.size
-            for j, box in enumerate(output_dict['detection_boxes']):
-                if output_dict['detection_classes'][j] == 10:
-                    region = image.crop(
-                        (int(box[1] * im_width), int(box[0] * im_height), int(box[3] * im_width),
-                         int(box[2] * im_height)))
-                    region.save(dst + '/' + str(i) + str(j) + '.jpg')
+            detection_boxes = output_dict['detection_boxes']
+            detection_classes = output_dict['detection_classes']
+            self.saveTrafficLights(detection_boxes, detection_classes, dst, i, image)
+
+    def saveTrafficLights(self, detection_boxes, detection_classes, dst, i, image):
+        (im_width, im_height) = image.size
+        for j, box in enumerate(detection_boxes):
+            if detection_classes[j] == 10:
+                trafficLight = image.crop(
+                    (int(box[1] * im_width), int(box[0] * im_height), int(box[3] * im_width),
+                     int(box[2] * im_height)))
+                trafficLight.save(dst + '/' + str(i) + str(j) + '.jpg')
 
     def extractTrafficLights(self, srcDir, dstDir):
         mkdir(dstDir + '/green')
