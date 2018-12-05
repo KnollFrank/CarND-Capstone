@@ -48,8 +48,11 @@ class TrafficLightExtractor:
 
     def extractAndSaveTrafficLightsForColor(self, color, srcDir, dstDir):
         mkdir(self.getDir4Color(dstDir, color))
-        self.detectAndSaveTrafficLights(glob.glob(self.getDir4Color(srcDir, color) + '/*'),
+        self.detectAndSaveTrafficLights(self.getFiles4Color(srcDir, color),
                                         self.getDir4Color(dstDir, color))
+
+    def getFiles4Color(self, dir, color):
+        return glob.glob(self.getDir4Color(dir, color) + '/*')
 
     def getDir4Color(self, dir, color):
         return dir + '/' + color
