@@ -125,8 +125,8 @@ class TrafficLightExtractor:
 
     def adaptBox2Image(self, box, image):
         width, height = image.size
-        left = int(box[1] * width)
-        upper = int(box[0] * height)
-        right = int(box[3] * width)
-        lower = int(box[2] * height)
-        return left, upper, right, lower
+        left = box[1] * width
+        upper = box[0] * height
+        right = box[3] * width
+        lower = box[2] * height
+        return map(int, (left, upper, right, lower))
