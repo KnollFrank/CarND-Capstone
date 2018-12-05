@@ -42,11 +42,11 @@ class TrafficLightExtractor:
         return detection_graph
 
     def extractAndSaveTrafficLights(self, srcDir, dstDir):
-        self.extractAndSaveTrafficLightsForColor('red', srcDir, dstDir)
-        self.extractAndSaveTrafficLightsForColor('yellow', srcDir, dstDir)
-        self.extractAndSaveTrafficLightsForColor('green', srcDir, dstDir)
+        self.extractAndSaveTrafficLights4Color('red', srcDir, dstDir)
+        self.extractAndSaveTrafficLights4Color('yellow', srcDir, dstDir)
+        self.extractAndSaveTrafficLights4Color('green', srcDir, dstDir)
 
-    def extractAndSaveTrafficLightsForColor(self, color, srcDir, dstDir):
+    def extractAndSaveTrafficLights4Color(self, color, srcDir, dstDir):
         mkdir(self.getDir4Color(dstDir, color))
         self.detectAndSaveTrafficLights(self.getFiles4Color(srcDir, color),
                                         self.getDir4Color(dstDir, color))
