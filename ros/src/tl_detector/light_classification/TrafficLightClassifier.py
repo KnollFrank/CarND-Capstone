@@ -3,6 +3,8 @@ from enum import Enum
 from TrafficLightProvider import TrafficLightProvider
 from PIL import Image
 from keras.models import load_model
+import numpy as np
+from keras.preprocessing import image
 
 class TrafficLight(Enum):
     RED = 1
@@ -11,6 +13,10 @@ class TrafficLight(Enum):
 
 
 class TrafficLightClassifier:
+
+    def __init__(self):
+        self.model = load_model(
+            '/home/frankknoll/udacity/SDCND/CarND-Capstone/ros/src/tl_detector/light_classification/model.h5')
 
     def classifyTrafficLights(self, image):
         output_dict = TrafficLightProvider().detectTrafficLightsWithin2(image)
@@ -44,6 +50,11 @@ class TrafficLightClassifier:
         lower = box[2] * height
         return map(int, (left, upper, right, lower))
 
-    def detectColor(self, image):
-        # model = load_model('/home/frankknoll/udacity/SDCND/CarND-Capstone/ros/src/tl_detector/light_classification/model.h5')
-        return TrafficLight.RED
+    def detectColor(self, img):
+        img_height, img_width = 120, 50
+        img = img.resize((img_width, img_height), Image.ANTIALIAS)
+        x = image.img_to_array(img)
+        x = np.expand_dims(x, axis=0)
+        labels = {0: TrafficLight.GREEN, 1: TrafficLight.RED, 3: TrafficLight.YELLOW}
+        prediction = self.model.predict(x)
+        return labels[np.argmax(prediction)]
