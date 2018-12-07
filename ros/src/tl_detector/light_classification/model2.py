@@ -5,7 +5,7 @@ from keras.preprocessing.image import ImageDataGenerator, array_to_img, img_to_a
 img_height, img_width = 120, 50
 
 num_classes = 3
-train_data_dir = '/home/frankknoll/udacity/SDCND/CarND-Capstone/ros/src/tl_detector/light_classification/data/trafficlight_images'
+train_data_dir = 'data/trafficlight_images'
 epochs = 50
 batch_size = 16
 
@@ -53,7 +53,7 @@ from keras.models import Sequential
 from keras.layers import Dropout, Flatten, Dense
 
 # TODO: rename to top_model_weights_file
-top_model_weights_path = '/home/frankknoll/udacity/SDCND/CarND-Capstone/ros/src/tl_detector/light_classification/bottleneck_fc_model.h5'
+top_model_weights_path = 'bottleneck_fc_model.h5'
 
 
 def create_top_model(input_shape):
@@ -86,8 +86,8 @@ from keras.layers import Dropout, Flatten, Dense
 from keras.callbacks import ModelCheckpoint
 from keras.utils import np_utils
 
-bottleneck_features_train_file = '/home/frankknoll/udacity/SDCND/CarND-Capstone/ros/src/tl_detector/light_classification/bottleneck_features_train.npy'
-bottleneck_features_validation_file = '/home/frankknoll/udacity/SDCND/CarND-Capstone/ros/src/tl_detector/light_classification/bottleneck_features_validation.npy'
+bottleneck_features_train_file = 'bottleneck_features_train.npy'
+bottleneck_features_validation_file = 'bottleneck_features_validation.npy'
 
 
 def save_bottleneck_features():
@@ -104,9 +104,7 @@ def save_bottleneck_features():
         shuffle=False)
     bottleneck_features_train = model.predict_generator(generator, generator.n // generator.batch_size)
     np.save(open(bottleneck_features_train_file, 'wb'), bottleneck_features_train)
-    np.save(open(
-        '/home/frankknoll/udacity/SDCND/CarND-Capstone/ros/src/tl_detector/light_classification/bottleneck_features_train_labels.npy',
-        'wb'), generator.classes)
+    np.save(open('bottleneck_features_train_labels.npy', 'wb'), generator.classes)
 
     print('validation data:')
     generator = train_datagen.flow_from_directory(
@@ -117,22 +115,16 @@ def save_bottleneck_features():
         shuffle=False)
     bottleneck_features_validation = model.predict_generator(generator, generator.n // generator.batch_size)
     np.save(open(bottleneck_features_validation_file, 'wb'), bottleneck_features_validation)
-    np.save(open(
-        '/home/frankknoll/udacity/SDCND/CarND-Capstone/ros/src/tl_detector/light_classification/bottleneck_features_validation_labels.npy',
-        'wb'), generator.classes)
+    np.save(open('bottleneck_features_validation_labels.npy', 'wb'), generator.classes)
 
 
 def train_top_model():
     train_data = np.load(open(bottleneck_features_train_file, 'rb'))
-    train_labels = np.load(open(
-        '/home/frankknoll/udacity/SDCND/CarND-Capstone/ros/src/tl_detector/light_classification/bottleneck_features_train_labels.npy',
-        'rb'))
+    train_labels = np.load(open('bottleneck_features_train_labels.npy', 'rb'))
     train_labels = np_utils.to_categorical(train_labels, num_classes)
 
     validation_data = np.load(open(bottleneck_features_validation_file, 'rb'))
-    validation_labels = np.load(open(
-        '/home/frankknoll/udacity/SDCND/CarND-Capstone/ros/src/tl_detector/light_classification/bottleneck_features_validation_labels.npy',
-        'rb'))
+    validation_labels = np.load(open('bottleneck_features_validation_labels.npy', 'rb'))
     validation_labels = np_utils.to_categorical(validation_labels, num_classes)
 
     model = create_top_model(train_data.shape[1:])
@@ -154,7 +146,7 @@ model.compile(loss='categorical_crossentropy',
               optimizer=optimizers.SGD(lr=1e-4, momentum=0.9),
               metrics=['accuracy'])
 # model.save_weights('model.h5')
-model.save('/home/frankknoll/udacity/SDCND/CarND-Capstone/ros/src/tl_detector/light_classification/model.h5')
+model.save('model.h5')
 
 from keras.preprocessing import image
 
@@ -171,7 +163,7 @@ def path_to_tensor(img_path):
 from keras.models import load_model
 
 del model
-model = load_model('/home/frankknoll/udacity/SDCND/CarND-Capstone/ros/src/tl_detector/light_classification/model.h5')
+model = load_model('model.h5')
 
 img = path_to_tensor('data/trafficlight_images/green/img_0178_green_1.jpg')
 # img = path_to_tensor('data/trafficlight_images/red/img_0001_red_1.jpg')
