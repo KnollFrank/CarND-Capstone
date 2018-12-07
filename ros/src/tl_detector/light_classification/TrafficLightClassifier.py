@@ -5,6 +5,7 @@ from PIL import Image
 from keras.models import load_model
 import numpy as np
 from keras.preprocessing import image
+import tensorflow as tf
 
 class TrafficLight(Enum):
     RED = 1
@@ -17,6 +18,8 @@ class TrafficLightClassifier:
     def __init__(self):
         self.model = load_model(
             '/home/frankknoll/udacity/SDCND/CarND-Capstone/ros/src/tl_detector/light_classification/model.h5')
+        # see: https://stackoverflow.com/questions/47115946/tensor-is-not-an-element-of-this-graph
+        self.graph = tf.get_default_graph()
 
     def classifyTrafficLights(self, image):
         output_dict = TrafficLightProvider().detectTrafficLightsWithin2(image)
@@ -56,5 +59,6 @@ class TrafficLightClassifier:
         x = image.img_to_array(img)
         x = np.expand_dims(x, axis=0)
         labels = {0: TrafficLight.GREEN, 1: TrafficLight.RED, 3: TrafficLight.YELLOW}
-        prediction = self.model.predict(x)
+        with self.graph.as_default():
+            prediction = self.model.predict(x)
         return labels[np.argmax(prediction)]
