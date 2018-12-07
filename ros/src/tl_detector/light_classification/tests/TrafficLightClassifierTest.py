@@ -17,7 +17,7 @@ class TrafficLightClassifierTest(TestCase):
 
     def shouldClassifyTrafficLights(self, imageFile, trafficLights):
         # Given
-        classifier = TrafficLightClassifier()
+        classifier = TrafficLightClassifier('../../model.h5')
         image = self.load_image_into_numpy_array(Image.open(imageFile))
 
         # When

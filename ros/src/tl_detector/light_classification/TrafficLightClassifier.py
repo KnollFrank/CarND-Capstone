@@ -15,9 +15,8 @@ class TrafficLight(Enum):
 
 class TrafficLightClassifier:
 
-    def __init__(self):
-        self.model = load_model(
-            '/home/frankknoll/udacity/SDCND/CarND-Capstone/ros/src/tl_detector/light_classification/model.h5')
+    def __init__(self, modelFile):
+        self.model = load_model(modelFile)
         # see: https://stackoverflow.com/questions/47115946/tensor-is-not-an-element-of-this-graph
         self.graph = tf.get_default_graph()
 

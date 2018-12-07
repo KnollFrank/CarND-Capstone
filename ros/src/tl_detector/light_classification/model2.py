@@ -4,8 +4,16 @@ from keras.preprocessing.image import ImageDataGenerator, array_to_img, img_to_a
 # dimensions of our images.
 img_height, img_width = 120, 50
 
-num_classes = 3
 train_data_dir = 'data/trafficlight_images'
+# TODO: rename to top_model_weights_file
+top_model_weights_path = 'bottleneck_fc_model.h5'
+bottleneck_features_train_file = 'bottleneck_features_train.npy'
+bottleneck_features_validation_file = 'bottleneck_features_validation.npy'
+bottleneck_features_train_labels = 'bottleneck_features_train_labels.npy'
+bottleneck_features_validation_labels = 'bottleneck_features_validation_labels.npy'
+modelFile = 'model.h5'
+
+num_classes = 3
 epochs = 50
 batch_size = 16
 
@@ -52,9 +60,6 @@ from keras import optimizers
 from keras.models import Sequential
 from keras.layers import Dropout, Flatten, Dense
 
-# TODO: rename to top_model_weights_file
-top_model_weights_path = 'bottleneck_fc_model.h5'
-
 
 def create_top_model(input_shape):
     model = Sequential()
@@ -86,9 +91,6 @@ from keras.layers import Dropout, Flatten, Dense
 from keras.callbacks import ModelCheckpoint
 from keras.utils import np_utils
 
-bottleneck_features_train_file = 'bottleneck_features_train.npy'
-bottleneck_features_validation_file = 'bottleneck_features_validation.npy'
-
 
 def save_bottleneck_features():
     # build the network
@@ -104,7 +106,7 @@ def save_bottleneck_features():
         shuffle=False)
     bottleneck_features_train = model.predict_generator(generator, generator.n // generator.batch_size)
     np.save(open(bottleneck_features_train_file, 'wb'), bottleneck_features_train)
-    np.save(open('bottleneck_features_train_labels.npy', 'wb'), generator.classes)
+    np.save(open(bottleneck_features_train_labels, 'wb'), generator.classes)
 
     print('validation data:')
     generator = train_datagen.flow_from_directory(
@@ -115,16 +117,16 @@ def save_bottleneck_features():
         shuffle=False)
     bottleneck_features_validation = model.predict_generator(generator, generator.n // generator.batch_size)
     np.save(open(bottleneck_features_validation_file, 'wb'), bottleneck_features_validation)
-    np.save(open('bottleneck_features_validation_labels.npy', 'wb'), generator.classes)
+    np.save(open(bottleneck_features_validation_labels, 'wb'), generator.classes)
 
 
 def train_top_model():
     train_data = np.load(open(bottleneck_features_train_file, 'rb'))
-    train_labels = np.load(open('bottleneck_features_train_labels.npy', 'rb'))
+    train_labels = np.load(open(bottleneck_features_train_labels, 'rb'))
     train_labels = np_utils.to_categorical(train_labels, num_classes)
 
     validation_data = np.load(open(bottleneck_features_validation_file, 'rb'))
-    validation_labels = np.load(open('bottleneck_features_validation_labels.npy', 'rb'))
+    validation_labels = np.load(open(bottleneck_features_validation_labels, 'rb'))
     validation_labels = np_utils.to_categorical(validation_labels, num_classes)
 
     model = create_top_model(train_data.shape[1:])
@@ -145,8 +147,8 @@ model = create_initialized_top_model_on_top_of_base_model()
 model.compile(loss='categorical_crossentropy',
               optimizer=optimizers.SGD(lr=1e-4, momentum=0.9),
               metrics=['accuracy'])
-# model.save_weights('model.h5')
-model.save('model.h5')
+# model.save_weights(modelFile)
+model.save(modelFile)
 
 from keras.preprocessing import image
 
@@ -160,15 +162,15 @@ def path_to_tensor(img_path):
     return np.expand_dims(x, axis=0)
 
 
-from keras.models import load_model
+#from keras.models import load_model
 
-del model
-model = load_model('model.h5')
+#del model
+#model = load_model(modelFile)
 
-img = path_to_tensor('data/trafficlight_images/green/img_0178_green_1.jpg')
+#img = path_to_tensor('data/trafficlight_images/green/img_0178_green_1.jpg')
 # img = path_to_tensor('data/trafficlight_images/red/img_0001_red_1.jpg')
-labels = {0: 'green', 1: 'red', 3: 'yellow'}
-labels[np.argmax(model.predict(img))]
+#labels = {0: 'green', 1: 'red', 3: 'yellow'}
+#labels[np.argmax(model.predict(img))]
 
-if __name__ == '__main__':
-    pass
+#if __name__ == '__main__':
+#    pass
