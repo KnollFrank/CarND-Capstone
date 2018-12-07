@@ -53,7 +53,6 @@ class TrafficLightExtractor:
         return root + '_' + str(i) + extension
 
     def saveTrafficLight(self, image, box, clazz, filename):
-        # TODO: isTrafficLight() muß an höherer Stelle im Callgraph ausgeführt werden.
         if self.isTrafficLight(clazz):
             trafficLight = self.extractTrafficLight(box, image)
             trafficLight.save(filename)
