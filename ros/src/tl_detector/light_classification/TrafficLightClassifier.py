@@ -32,7 +32,6 @@ class TrafficLightClassifier:
             self.saveTrafficLight(image, box, classes[i], trafficLights)
 
     def saveTrafficLight(self, image, box, clazz, trafficLights):
-        # TODO: isTrafficLight() muß an höherer Stelle im Callgraph ausgeführt werden.
         if self.isTrafficLight(clazz):
             trafficLightImage = self.extractTrafficLight(box, image)
             color = self.detectColor(trafficLightImage)
