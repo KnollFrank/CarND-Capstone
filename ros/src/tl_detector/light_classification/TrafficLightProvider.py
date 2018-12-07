@@ -11,10 +11,7 @@ if StrictVersion(tf.__version__) < StrictVersion('1.9.0'):
     raise ImportError('Please upgrade your TensorFlow installation from ' + str(
         StrictVersion(tf.__version__)) + ' to v1.9.* or later!')
 
-PATH_TO_FROZEN_GRAPH = '/home/frankknoll/udacity/SDCND/models/research/object_detection/rfcn_resnet101_coco_2018_01_28/frozen_inference_graph.pb'
-
-
-def load_model():
+def load_model(PATH_TO_FROZEN_GRAPH):
     detection_graph = tf.Graph()
     with detection_graph.as_default():
         od_graph_def = tf.GraphDef()
@@ -27,10 +24,9 @@ def load_model():
 
 # adapted from https://github.com/tensorflow/models/blob/master/research/object_detection/object_detection_tutorial.ipynb
 class TrafficLightProvider:
-    detection_graph = load_model()
 
-    def __init__(self):
-        pass
+    def __init__(self, PATH_TO_FROZEN_GRAPH):
+        self.detection_graph = load_model(PATH_TO_FROZEN_GRAPH)
 
     def detectTrafficLightsWithin(self, image):
         return self.run_inference_for_single_image(self.load_image_into_numpy_array(image))
@@ -44,7 +40,7 @@ class TrafficLightProvider:
             (im_height, im_width, 3)).astype(np.uint8)
 
     def run_inference_for_single_image(self, image):
-        with TrafficLightProvider.detection_graph.as_default():
+        with self.detection_graph.as_default():
             with tf.Session() as sess:
                 # Get handles to input and output tensors
                 ops = tf.get_default_graph().get_operations()

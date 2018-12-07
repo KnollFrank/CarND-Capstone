@@ -50,7 +50,7 @@ class TLDetector(object):
         self.upcoming_red_light_pub = rospy.Publisher('/traffic_waypoint', Int32, queue_size=1)
 
         self.bridge = CvBridge()
-        self.light_classifier = TrafficLightClassifier('light_classification/model.h5')
+        self.light_classifier = TrafficLightClassifier('light_classification/model.h5', 'light_classification/data/rfcn_resnet101_coco_2018_01_28/frozen_inference_graph.pb')
         self.listener = tf.TransformListener()
 
         rospy.spin()

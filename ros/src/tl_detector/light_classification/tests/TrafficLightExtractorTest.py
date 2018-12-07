@@ -14,7 +14,7 @@ class TrafficLightExtractorTest(TestCase):
 
     def test_extract_traffic_lights(self):
         # GIVEN
-        trafficLightExtractor = TrafficLightExtractor()
+        trafficLightExtractor = TrafficLightExtractor('../../data/rfcn_resnet101_coco_2018_01_28/frozen_inference_graph.pb')
 
         # WHEN
         trafficLightExtractor.extractAndSaveTrafficLights(srcDir='../images', dstDir=self.test_dir)

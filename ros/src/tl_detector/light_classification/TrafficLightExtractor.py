@@ -13,8 +13,8 @@ from object_detection.utils import label_map_util
 
 class TrafficLightExtractor:
 
-    def __init__(self):
-        pass
+    def __init__(self, PATH_TO_FROZEN_GRAPH):
+        self.trafficLightProvider = TrafficLightProvider(PATH_TO_FROZEN_GRAPH)
 
     def extractAndSaveTrafficLights(self, srcDir, dstDir):
         self.extractAndSaveTrafficLights4Color('red', srcDir, dstDir)
@@ -38,7 +38,7 @@ class TrafficLightExtractor:
 
     def detectAndSaveTrafficLightsWithinImage(self, imagePath, dst):
         image = Image.open(imagePath)
-        output_dict = TrafficLightProvider().detectTrafficLightsWithin(image)
+        output_dict = self.trafficLightProvider.detectTrafficLightsWithin(image)
         self.saveTrafficLights(image, output_dict['detection_boxes'], output_dict['detection_classes'], dst)
 
     def saveTrafficLights(self, image, boxes, classes, dst):
@@ -74,5 +74,5 @@ class TrafficLightExtractor:
 
 
 if __name__ == '__main__':
-    trafficLightExtractor = TrafficLightExtractor()
+    trafficLightExtractor = TrafficLightExtractor('data/rfcn_resnet101_coco_2018_01_28/frozen_inference_graph.pb')
     trafficLightExtractor.extractAndSaveTrafficLights(srcDir='data/simulator_images', dstDir='data/trafficlight_images')
