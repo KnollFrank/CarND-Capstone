@@ -34,20 +34,17 @@ class TrafficLightDetector:
 
         return trafficLightNumpyImages
 
-    def crop(self, numpyImage, fractionBox):
-        left, lower, right, upper = self.adaptFractionBox2Image(fractionBox, numpyImage)
-        imageNumpy = numpyImage[upper:lower + 1, left:right + 1, :]
-        return imageNumpy
-
-    def adaptFractionBox2Image(self, fractionBox, numpyImage):
-        upperFraction, leftFraction, lowerFraction, rightFraction = fractionBox
-        (height, width, _) = numpyImage.shape
-        upper, left, lower, right = map(int, (
-            upperFraction * height, leftFraction * width, lowerFraction * height, rightFraction * width))
-        return left, lower, right, upper
-
     def isTrafficLight(self, clazz):
         return clazz == 10
+
+    def crop(self, numpyImage, fractionBox):
+        upper, left, lower, right = self.adaptFractionBox2Image(fractionBox, numpyImage)
+        return numpyImage[upper:lower + 1, left:right + 1, :]
+
+    def adaptFractionBox2Image(self, (upperFraction, leftFraction, lowerFraction, rightFraction), numpyImage):
+        (height, width, _) = numpyImage.shape
+        absoluteBox = (upperFraction * height, leftFraction * width, lowerFraction * height, rightFraction * width)
+        return map(int, absoluteBox)
 
     def run_inference_for_single_image(self, numpyImage):
         with self.detection_graph.as_default():
