@@ -25,7 +25,8 @@ class TrafficLightDetector:
         return detection_graph
 
     def detectTrafficLightsWithinNumpyImage(self, numpyImage):
-        return self.run_inference_for_single_image(numpyImage)
+        output_dict = self.run_inference_for_single_image(numpyImage)
+        return output_dict['detection_boxes'], output_dict['detection_classes']
 
     def run_inference_for_single_image(self, numpyImage):
         with self.detection_graph.as_default():

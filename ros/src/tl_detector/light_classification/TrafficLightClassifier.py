@@ -1,11 +1,10 @@
-from enum import Enum
-
-from TrafficLightDetector import TrafficLightDetector
-from PIL import Image
-from keras.models import load_model
 import numpy as np
-from keras.preprocessing import image
 import tensorflow as tf
+from PIL import Image
+from enum import Enum
+from keras.models import load_model
+from keras.preprocessing import image
+
 
 class TrafficLight(Enum):
     RED = 1
@@ -19,12 +18,12 @@ class TrafficLightClassifier:
         self.model = load_model(modelFile)
         # see: https://stackoverflow.com/questions/47115946/tensor-is-not-an-element-of-this-graph
         self.graph = tf.get_default_graph()
-        self.trafficLightProvider = trafficLightDetector
+        self.trafficLightDetector = trafficLightDetector
 
     def classifyTrafficLights(self, image):
-        output_dict = self.trafficLightProvider.detectTrafficLightsWithinNumpyImage(image)
+        boxes, classes = self.trafficLightDetector.detectTrafficLightsWithinNumpyImage(image)
         trafficLights = []
-        self.saveTrafficLights(image, output_dict['detection_boxes'], output_dict['detection_classes'], trafficLights)
+        self.saveTrafficLights(image, boxes, classes, trafficLights)
         return trafficLights
 
     # TODO: refactor
