@@ -1,16 +1,10 @@
 from distutils.version import StrictVersion
-from collections import defaultdict
-from io import StringIO
+
 import numpy as np
-import six.moves.urllib as urllib
-import tarfile
 import tensorflow as tf
-import zipfile
+
 
 # adapted from https://github.com/tensorflow/models/blob/master/research/object_detection/object_detection_tutorial.ipynb
-from helper import PILImage2numpyImage
-
-
 class TrafficLightDetector:
 
     def __init__(self, path2FrozenGraph):
