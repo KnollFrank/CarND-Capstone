@@ -15,11 +15,11 @@ class TrafficLight(Enum):
 
 class TrafficLightClassifier:
 
-    def __init__(self, modelFile, PATH_TO_FROZEN_GRAPH):
+    def __init__(self, modelFile, trafficLightProvider):
         self.model = load_model(modelFile)
         # see: https://stackoverflow.com/questions/47115946/tensor-is-not-an-element-of-this-graph
         self.graph = tf.get_default_graph()
-        self.trafficLightProvider = TrafficLightProvider(PATH_TO_FROZEN_GRAPH)
+        self.trafficLightProvider = trafficLightProvider
 
     def classifyTrafficLights(self, image):
         output_dict = self.trafficLightProvider.detectTrafficLightsWithin2(image)
@@ -27,6 +27,7 @@ class TrafficLightClassifier:
         self.saveTrafficLights(image, output_dict['detection_boxes'], output_dict['detection_classes'], trafficLights)
         return trafficLights
 
+    # TODO: refactor
     def saveTrafficLights(self, image, boxes, classes, trafficLights):
         for i, box in enumerate(boxes):
             self.saveTrafficLight(image, box, classes[i], trafficLights)
