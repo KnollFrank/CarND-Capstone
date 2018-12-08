@@ -22,7 +22,7 @@ class TrafficLightClassifier:
         self.trafficLightProvider = trafficLightDetector
 
     def classifyTrafficLights(self, image):
-        output_dict = self.trafficLightProvider.detectTrafficLightsWithin2(image)
+        output_dict = self.trafficLightProvider.detectTrafficLightsWithinNumpyImage(image)
         trafficLights = []
         self.saveTrafficLights(image, output_dict['detection_boxes'], output_dict['detection_classes'], trafficLights)
         return trafficLights

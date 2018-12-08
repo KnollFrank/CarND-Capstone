@@ -30,11 +30,7 @@ class TrafficLightDetector:
                 tf.import_graph_def(od_graph_def, name='')
         return detection_graph
 
-    def detectTrafficLightsWithin(self, PILImage):
-        return self.run_inference_for_single_image(PILImage2numpyImage(PILImage))
-
-    # TODO: refactor
-    def detectTrafficLightsWithin2(self, numpyImage):
+    def detectTrafficLightsWithinNumpyImage(self, numpyImage):
         return self.run_inference_for_single_image(numpyImage)
 
     def run_inference_for_single_image(self, numpyImage):

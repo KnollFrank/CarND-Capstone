@@ -1,4 +1,5 @@
 from TrafficLightDetector import TrafficLightDetector
+from helper import PILImage2numpyImage
 from utilities import mkdir
 
 import os
@@ -37,9 +38,10 @@ class TrafficLightExtractor:
             self.detectAndSaveTrafficLightsWithinImage(imagePath, dst)
 
     def detectAndSaveTrafficLightsWithinImage(self, imagePath, dst):
-        image = Image.open(imagePath)
-        output_dict = self.trafficLightDetector.detectTrafficLightsWithin(image)
-        self.saveTrafficLights(image, output_dict['detection_boxes'], output_dict['detection_classes'], dst)
+        PILImage = Image.open(imagePath)
+        output_dict = self.trafficLightDetector.detectTrafficLightsWithinNumpyImage(PILImage2numpyImage(PILImage))
+        self.saveTrafficLights(PILImage, output_dict['detection_boxes'], output_dict['detection_classes'],
+                               dst)
 
     def saveTrafficLights(self, image, boxes, classes, dst):
         for i, box in enumerate(boxes):
