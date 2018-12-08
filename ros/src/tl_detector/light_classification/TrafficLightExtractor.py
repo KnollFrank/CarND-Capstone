@@ -39,12 +39,12 @@ class TrafficLightExtractor:
 
     def detectAndSaveTrafficLightsWithinImage(self, imagePath, dst):
         PILImage = Image.open(imagePath)
-        boxes, classes = self.trafficLightDetector.detectTrafficLightsWithinNumpyImage(PILImage2numpyImage(PILImage))
-        self.saveTrafficLights(PILImage, boxes, classes, dst)
+        boxes = self.trafficLightDetector.detectTrafficLightsWithinNumpyImage(PILImage2numpyImage(PILImage))
+        self.saveTrafficLights(PILImage, boxes, dst)
 
-    def saveTrafficLights(self, image, boxes, classes, dst):
+    def saveTrafficLights(self, image, boxes, dst):
         for i, box in enumerate(boxes):
-            self.saveTrafficLight(image, box, classes[i], self.createFileName(dst, image, i + 1))
+            self.saveTrafficLight(image, box, self.createFileName(dst, image, i + 1))
 
     def createFileName(self, dst, image, i):
         return dst + '/' + self.getNumberedFileName(image.filename, i)
@@ -53,13 +53,9 @@ class TrafficLightExtractor:
         root, extension = os.path.splitext(os.path.basename(filename))
         return root + '_' + str(i) + extension
 
-    def saveTrafficLight(self, image, box, clazz, filename):
-        if self.isTrafficLight(clazz):
-            trafficLight = self.extractTrafficLight(box, image)
-            trafficLight.save(filename)
-
-    def isTrafficLight(self, clazz):
-        return clazz == 10
+    def saveTrafficLight(self, image, box, filename):
+        trafficLight = self.extractTrafficLight(box, image)
+        trafficLight.save(filename)
 
     def extractTrafficLight(self, box, image):
         return image.crop(self.adaptBox2Image(box, image))

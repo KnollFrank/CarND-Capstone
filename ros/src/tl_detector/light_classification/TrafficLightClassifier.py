@@ -21,24 +21,20 @@ class TrafficLightClassifier:
         self.trafficLightDetector = trafficLightDetector
 
     def classifyTrafficLights(self, image):
-        boxes, classes = self.trafficLightDetector.detectTrafficLightsWithinNumpyImage(image)
+        boxes = self.trafficLightDetector.detectTrafficLightsWithinNumpyImage(image)
         trafficLights = []
-        self.saveTrafficLights(image, boxes, classes, trafficLights)
+        self.saveTrafficLights(image, boxes, trafficLights)
         return trafficLights
 
     # TODO: refactor
-    def saveTrafficLights(self, image, boxes, classes, trafficLights):
-        for i, box in enumerate(boxes):
-            self.saveTrafficLight(image, box, classes[i], trafficLights)
+    def saveTrafficLights(self, image, boxes, trafficLights):
+        for box in boxes:
+            self.saveTrafficLight(image, box, trafficLights)
 
-    def saveTrafficLight(self, image, box, clazz, trafficLights):
-        if self.isTrafficLight(clazz):
-            trafficLightImage = self.extractTrafficLight(box, image)
-            color = self.detectColor(trafficLightImage)
-            trafficLights.append(color)
-
-    def isTrafficLight(self, clazz):
-        return clazz == 10
+    def saveTrafficLight(self, image, box, trafficLights):
+        trafficLightImage = self.extractTrafficLight(box, image)
+        color = self.detectColor(trafficLightImage)
+        trafficLights.append(color)
 
     def extractTrafficLight(self, box, image):
         image = Image.fromarray(image.astype('uint8'), 'RGB')
