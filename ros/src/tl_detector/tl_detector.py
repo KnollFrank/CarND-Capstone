@@ -133,7 +133,7 @@ class TLDetector(object):
 
         trafficLightColors = self.light_classifier.classifyTrafficLights(cv_image)
         trafficLight = TrafficLight.UNKNOWN
-        if (len(trafficLights) > 0):
+        if (len(trafficLightColors) > 0):
             trafficLight = self.asTrafficLight(trafficLightColors[0])
 
         rospy.loginfo("label: %s", trafficLight)
