@@ -31,13 +31,17 @@ class TrafficLightClassifier:
                 trafficLightNumpyImages]
 
     def detectTrafficLightColor(self, numpyImage):
-        # TODO: refactor
-        img_height, img_width = 120, 50
-        PILImage = numpyImage2PILImage(numpyImage)
-        PILImage = PILImage.resize((img_width, img_height), Image.ANTIALIAS)
-        x = image.img_to_array(PILImage)
-        x = np.expand_dims(x, axis=0)
-        labels = {0: TrafficLightColor.GREEN, 1: TrafficLightColor.RED, 3: TrafficLightColor.YELLOW}
+        PILImage = self.resize(numpyImage, width=50, height=120)
         with self.graph.as_default():
-            prediction = self.model.predict(x)
-        return labels[np.argmax(prediction)]
+            predictions = self.model.predict(self.asCNNInput(PILImage))
+        return self.getMostLikelyTrafficLightColor(predictions)
+
+    def resize(self, numpyImage, width, height):
+        return numpyImage2PILImage(numpyImage).resize((width, height), Image.ANTIALIAS)
+
+    def asCNNInput(self, PILImage):
+        return np.expand_dims(image.img_to_array(PILImage), axis=0)
+
+    def getMostLikelyTrafficLightColor(self, predictions):
+        labels = {0: TrafficLightColor.GREEN, 1: TrafficLightColor.RED, 3: TrafficLightColor.YELLOW}
+        return labels[np.argmax(predictions)]
