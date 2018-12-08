@@ -7,26 +7,26 @@ import tarfile
 import tensorflow as tf
 import zipfile
 
-if StrictVersion(tf.__version__) < StrictVersion('1.9.0'):
-    raise ImportError('Please upgrade your TensorFlow installation from ' + str(
-        StrictVersion(tf.__version__)) + ' to v1.9.* or later!')
-
-def load_model(PATH_TO_FROZEN_GRAPH):
-    detection_graph = tf.Graph()
-    with detection_graph.as_default():
-        od_graph_def = tf.GraphDef()
-        with tf.gfile.GFile(PATH_TO_FROZEN_GRAPH, 'rb') as fid:
-            serialized_graph = fid.read()
-            od_graph_def.ParseFromString(serialized_graph)
-            tf.import_graph_def(od_graph_def, name='')
-    return detection_graph
-
-
 # adapted from https://github.com/tensorflow/models/blob/master/research/object_detection/object_detection_tutorial.ipynb
 class TrafficLightDetector:
 
-    def __init__(self, PATH_TO_FROZEN_GRAPH):
-        self.detection_graph = load_model(PATH_TO_FROZEN_GRAPH)
+    def __init__(self, path2FrozenGraph):
+        self.detection_graph = self.load_model(path2FrozenGraph)
+
+    def load_model(self, path2FrozenGraph):
+        if StrictVersion(tf.__version__) < StrictVersion('1.9.0'):
+            raise ImportError('Please upgrade your TensorFlow installation from ' + str(
+                StrictVersion(tf.__version__)) + ' to v1.9.* or later!')
+
+        detection_graph = tf.Graph()
+        with detection_graph.as_default():
+            od_graph_def = tf.GraphDef()
+            with tf.gfile.GFile(path2FrozenGraph, 'rb') as fid:
+                serialized_graph = fid.read()
+                od_graph_def.ParseFromString(serialized_graph)
+                tf.import_graph_def(od_graph_def, name='')
+        return detection_graph
+
 
     def detectTrafficLightsWithin(self, image):
         return self.run_inference_for_single_image(self.load_image_into_numpy_array(image))
