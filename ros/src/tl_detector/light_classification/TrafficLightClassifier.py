@@ -8,7 +8,7 @@ from keras.preprocessing import image
 from helper import numpyImage2PILImage
 
 
-class TrafficLight(Enum):
+class TrafficLightColor(Enum):
     RED = 1
     YELLOW = 2
     GREEN = 3
@@ -24,27 +24,20 @@ class TrafficLightClassifier:
 
     def classifyTrafficLights(self, numpyImage):
         trafficLightNumpyImages = self.trafficLightDetector.detectTrafficLightsWithinNumpyImage(numpyImage)
-        trafficLights = []
-        self.saveTrafficLights(numpyImage, trafficLightNumpyImages, trafficLights)
-        return trafficLights
+        return self.detectTrafficLightColors(trafficLightNumpyImages)
 
-    # TODO: refactor
-    def saveTrafficLights(self, numpyImage, trafficLightNumpyImages, trafficLights):
-        for trafficLightNumpyImage in trafficLightNumpyImages:
-            self.saveTrafficLight(numpyImage, trafficLightNumpyImage, trafficLights)
+    def detectTrafficLightColors(self, trafficLightNumpyImages):
+        return [self.detectTrafficLightColor(trafficLightNumpyImage) for trafficLightNumpyImage in
+                trafficLightNumpyImages]
 
-    def saveTrafficLight(self, numpyImage, trafficLightNumpyImage, trafficLights):
-        color = self.detectColor(trafficLightNumpyImage)
-        trafficLights.append(color)
-
-    def detectColor(self, trafficLightNumpyImage):
+    def detectTrafficLightColor(self, numpyImage):
         # TODO: refactor
         img_height, img_width = 120, 50
-        trafficLightPILImage = numpyImage2PILImage(trafficLightNumpyImage)
-        trafficLightPILImage = trafficLightPILImage.resize((img_width, img_height), Image.ANTIALIAS)
-        x = image.img_to_array(trafficLightPILImage)
+        PILImage = numpyImage2PILImage(numpyImage)
+        PILImage = PILImage.resize((img_width, img_height), Image.ANTIALIAS)
+        x = image.img_to_array(PILImage)
         x = np.expand_dims(x, axis=0)
-        labels = {0: TrafficLight.GREEN, 1: TrafficLight.RED, 3: TrafficLight.YELLOW}
+        labels = {0: TrafficLightColor.GREEN, 1: TrafficLightColor.RED, 3: TrafficLightColor.YELLOW}
         with self.graph.as_default():
             prediction = self.model.predict(x)
         return labels[np.argmax(prediction)]
