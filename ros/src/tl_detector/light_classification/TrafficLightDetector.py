@@ -8,6 +8,9 @@ import tensorflow as tf
 import zipfile
 
 # adapted from https://github.com/tensorflow/models/blob/master/research/object_detection/object_detection_tutorial.ipynb
+from helper import load_image_into_numpy_array
+
+
 class TrafficLightDetector:
 
     def __init__(self, path2FrozenGraph):
@@ -29,18 +32,13 @@ class TrafficLightDetector:
 
 
     def detectTrafficLightsWithin(self, image):
-        return self.run_inference_for_single_image(self.load_image_into_numpy_array(image))
+        return self.run_inference_for_single_image(load_image_into_numpy_array(image))
 
     # TODO: refactor
-    def detectTrafficLightsWithin2(self, image):
-        return self.run_inference_for_single_image(image)
+    def detectTrafficLightsWithin2(self, numpyImage):
+        return self.run_inference_for_single_image(numpyImage)
 
-    def load_image_into_numpy_array(self, image):
-        (im_width, im_height) = image.size
-        return np.array(image.getdata()).reshape(
-            (im_height, im_width, 3)).astype(np.uint8)
-
-    def run_inference_for_single_image(self, image):
+    def run_inference_for_single_image(self, numpyImage):
         with self.detection_graph.as_default():
             with tf.Session() as sess:
                 # Get handles to input and output tensors
@@ -62,7 +60,7 @@ class TrafficLightDetector:
                     detection_boxes = tf.slice(detection_boxes, [0, 0], [real_num_detection, -1])
                     detection_masks = tf.slice(detection_masks, [0, 0, 0], [real_num_detection, -1, -1])
                     detection_masks_reframed = utils_ops.reframe_box_masks_to_image_masks(
-                        detection_masks, detection_boxes, image.shape[0], image.shape[1])
+                        detection_masks, detection_boxes, numpyImage.shape[0], numpyImage.shape[1])
                     detection_masks_reframed = tf.cast(
                         tf.greater(detection_masks_reframed, 0.5), tf.uint8)
                     tensor_dict['detection_masks'] = tf.expand_dims(
@@ -70,7 +68,7 @@ class TrafficLightDetector:
                 image_tensor = tf.get_default_graph().get_tensor_by_name('image_tensor:0')
 
                 output_dict = sess.run(tensor_dict,
-                                       feed_dict={image_tensor: np.expand_dims(image, 0)})
+                                       feed_dict={image_tensor: np.expand_dims(numpyImage, 0)})
 
                 output_dict['num_detections'] = int(output_dict['num_detections'][0])
                 output_dict['detection_classes'] = output_dict[
