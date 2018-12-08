@@ -26,17 +26,25 @@ class TrafficLightDetector:
 
     def detectTrafficLightsWithinNumpyImage(self, numpyImage):
         output_dict = self.run_inference_for_single_image(numpyImage)
-        # TODO: refactor by simplifying
         trafficLightNumpyImages = []
         for i, box in enumerate(output_dict['detection_boxes']):
             if self.isTrafficLight(output_dict['detection_classes'][i]):
-                # TODO: refactor
-                upper, left, lower, right = box
-                (height, width, channels) = numpyImage.shape
-                upper, left, lower, right = map(int, (upper * height, left * width, lower * height, right * width))
-                trafficLightNumpyImages.append(numpyImage[upper:lower + 1, left:right + 1, :])
+                trafficLightNumpyImage = self.crop(numpyImage, box)
+                trafficLightNumpyImages.append(trafficLightNumpyImage)
 
         return trafficLightNumpyImages
+
+    def crop(self, numpyImage, fractionBox):
+        left, lower, right, upper = self.adaptFractionBox2Image(fractionBox, numpyImage)
+        imageNumpy = numpyImage[upper:lower + 1, left:right + 1, :]
+        return imageNumpy
+
+    def adaptFractionBox2Image(self, fractionBox, numpyImage):
+        upperFraction, leftFraction, lowerFraction, rightFraction = fractionBox
+        (height, width, _) = numpyImage.shape
+        upper, left, lower, right = map(int, (
+            upperFraction * height, leftFraction * width, lowerFraction * height, rightFraction * width))
+        return left, lower, right, upper
 
     def isTrafficLight(self, clazz):
         return clazz == 10
