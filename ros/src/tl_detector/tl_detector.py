@@ -6,7 +6,7 @@ from styx_msgs.msg import TrafficLightArray, TrafficLight
 from styx_msgs.msg import Lane
 from sensor_msgs.msg import Image
 from cv_bridge import CvBridge
-from light_classification.TrafficLightClassifier import TrafficLightClassifier
+from light_classification.TrafficLightClassifier import TrafficLightClassifier, TrafficLightColor
 from light_classification.TrafficLightDetector import TrafficLightDetector
 import tf
 import cv2
@@ -131,14 +131,22 @@ class TLDetector(object):
 
         cv_image = self.bridge.imgmsg_to_cv2(self.camera_image, "bgr8")
 
-        trafficLights = self.light_classifier.classifyTrafficLights(cv_image)
+        trafficLightColors = self.light_classifier.classifyTrafficLights(cv_image)
         trafficLight = TrafficLight.UNKNOWN
         if (len(trafficLights) > 0):
-            trafficLight = trafficLights[0]
+            trafficLight = self.asTrafficLight(trafficLightColors[0])
 
         rospy.loginfo("label: %s", trafficLight)
         return trafficLight
 
+
+    def asTrafficLight(self, trafficLightColor):
+        if trafficLightColor == TrafficLightColor.RED:
+            return TrafficLight.RED
+        if trafficLightColor == TrafficLightColor.YELLOW:
+            return TrafficLight.YELLOW
+        if trafficLightColor == TrafficLightColor.GREEN:
+            return TrafficLight.GREEN
 
     def process_traffic_lights(self):
         """Finds closest visible traffic light, if one exists, and determines its
