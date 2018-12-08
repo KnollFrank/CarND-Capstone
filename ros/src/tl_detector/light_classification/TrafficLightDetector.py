@@ -23,7 +23,7 @@ def load_model(PATH_TO_FROZEN_GRAPH):
 
 
 # adapted from https://github.com/tensorflow/models/blob/master/research/object_detection/object_detection_tutorial.ipynb
-class TrafficLightProvider:
+class TrafficLightDetector:
 
     def __init__(self, PATH_TO_FROZEN_GRAPH):
         self.detection_graph = load_model(PATH_TO_FROZEN_GRAPH)

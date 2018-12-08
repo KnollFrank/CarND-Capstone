@@ -15,11 +15,11 @@ class TrafficLight(Enum):
 
 class TrafficLightClassifier:
 
-    def __init__(self, modelFile, trafficLightProvider):
+    def __init__(self, modelFile, trafficLightDetector):
         self.model = load_model(modelFile)
         # see: https://stackoverflow.com/questions/47115946/tensor-is-not-an-element-of-this-graph
         self.graph = tf.get_default_graph()
-        self.trafficLightProvider = trafficLightProvider
+        self.trafficLightProvider = trafficLightDetector
 
     def classifyTrafficLights(self, image):
         output_dict = self.trafficLightProvider.detectTrafficLightsWithin2(image)
