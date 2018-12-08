@@ -28,3 +28,7 @@ Tensorflow Object Detection API Workflow:
 - irgendein CNN auf diese extrahierten und gelabelten Bilder anwenden (siehe /home/frankknoll/udacity/SDCND/tmp/transfer_learning_test/transfer_learning.ipynb)
 
 frankknoll@frankknoll-XPS-13-9370:~/udacity/SDCND/CarND-Capstone$ conda env update carnd -f requirements.txt
+
+TODO:
+- ssd_mobilenet_v1_coco_11_06_2017
+
