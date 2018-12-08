@@ -5,7 +5,7 @@ from enum import Enum
 from keras.models import load_model
 from keras.preprocessing import image
 
-from helper import numpyImage2PILImage
+from utilities import numpyImage2PILImage
 
 
 class TrafficLightColor(Enum):

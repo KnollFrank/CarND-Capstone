@@ -1,6 +1,5 @@
 from TrafficLightDetector import TrafficLightDetector
-from helper import PILImage2numpyImage, numpyImage2PILImage, loadNumpyImage
-from utilities import mkdir
+from utilities import mkdir, PILImage2numpyImage, numpyImage2PILImage, loadNumpyImage
 
 import os
 import sys

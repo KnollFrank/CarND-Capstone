@@ -4,7 +4,7 @@ from PIL import Image
 
 from TrafficLightClassifier import TrafficLightClassifier, TrafficLightColor
 from TrafficLightDetector import TrafficLightDetector
-from helper import PILImage2numpyImage
+from utilities import PILImage2numpyImage
 
 
 class TrafficLightClassifierTest(TestCase):
