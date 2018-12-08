@@ -1,5 +1,5 @@
 from TrafficLightDetector import TrafficLightDetector
-from helper import PILImage2numpyImage
+from helper import PILImage2numpyImage, numpyImage2PILImage
 from utilities import mkdir
 
 import os
@@ -55,9 +55,8 @@ class TrafficLightExtractor:
         root, extension = os.path.splitext(os.path.basename(filename))
         return root + '_' + str(i) + extension
 
-    def saveTrafficLight(self, trafficLightNumpyImage, filename):
-        trafficLight = Image.fromarray(trafficLightNumpyImage)
-        trafficLight.save(filename)
+    def saveTrafficLight(self, numpyImage, filename):
+        numpyImage2PILImage(numpyImage).save(filename)
 
 
 if __name__ == '__main__':
