@@ -8,7 +8,7 @@ import tensorflow as tf
 import zipfile
 
 # adapted from https://github.com/tensorflow/models/blob/master/research/object_detection/object_detection_tutorial.ipynb
-from helper import load_image_into_numpy_array
+from helper import PILImage2numpyImage
 
 
 class TrafficLightDetector:
@@ -30,9 +30,8 @@ class TrafficLightDetector:
                 tf.import_graph_def(od_graph_def, name='')
         return detection_graph
 
-
-    def detectTrafficLightsWithin(self, image):
-        return self.run_inference_for_single_image(load_image_into_numpy_array(image))
+    def detectTrafficLightsWithin(self, PILImage):
+        return self.run_inference_for_single_image(PILImage2numpyImage(PILImage))
 
     # TODO: refactor
     def detectTrafficLightsWithin2(self, numpyImage):

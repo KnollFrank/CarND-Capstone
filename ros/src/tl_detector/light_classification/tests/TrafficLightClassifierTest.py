@@ -4,7 +4,7 @@ from PIL import Image
 
 from TrafficLightClassifier import TrafficLightClassifier, TrafficLight
 from TrafficLightDetector import TrafficLightDetector
-from helper import load_image_into_numpy_array
+from helper import PILImage2numpyImage
 
 
 class TrafficLightClassifierTest(TestCase):
@@ -20,7 +20,7 @@ class TrafficLightClassifierTest(TestCase):
     def shouldClassifyTrafficLights(self, imageFile, trafficLights):
         # Given
         classifier = TrafficLightClassifier('../../model.h5', TrafficLightDetector('../../data/rfcn_resnet101_coco_2018_01_28/frozen_inference_graph.pb'))
-        image = load_image_into_numpy_array(Image.open(imageFile))
+        image = PILImage2numpyImage(Image.open(imageFile))
 
         # When
         trafficLightsActual = classifier.classifyTrafficLights(image)

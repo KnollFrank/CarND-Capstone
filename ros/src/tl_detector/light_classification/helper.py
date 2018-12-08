@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def load_image_into_numpy_array(image):
-    (im_width, im_height) = image.size
-    return np.array(image.getdata()).reshape(
+def PILImage2numpyImage(PILImage):
+    (im_width, im_height) = PILImage.size
+    return np.array(PILImage.getdata()).reshape(
         (im_height, im_width, 3)).astype(np.uint8)
