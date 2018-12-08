@@ -9,3 +9,8 @@ def PILImage2numpyImage(PILImage):
 
 def numpyImage2PILImage(numpyImage):
     return Image.fromarray(numpyImage)
+
+
+def loadNumpyImage(imagePath):
+    PILImage = Image.open(imagePath)
+    return PILImage2numpyImage(PILImage)

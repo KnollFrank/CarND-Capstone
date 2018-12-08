@@ -1,5 +1,5 @@
 from TrafficLightDetector import TrafficLightDetector
-from helper import PILImage2numpyImage, numpyImage2PILImage
+from helper import PILImage2numpyImage, numpyImage2PILImage, loadNumpyImage
 from utilities import mkdir
 
 import os
@@ -15,8 +15,8 @@ from object_detection.utils import label_map_util
 
 class TrafficLightExtractor:
 
-    def __init__(self, PATH_TO_FROZEN_GRAPH):
-        self.trafficLightDetector = TrafficLightDetector(PATH_TO_FROZEN_GRAPH)
+    def __init__(self, trafficLightDetector):
+        self.trafficLightDetector = trafficLightDetector
 
     def extractAndSaveTrafficLights(self, srcDir, dstDir):
         self.extractAndSaveTrafficLights4Color('red', srcDir, dstDir)
@@ -39,17 +39,16 @@ class TrafficLightExtractor:
             self.detectAndSaveTrafficLightsWithinImage(imagePath, dst)
 
     def detectAndSaveTrafficLightsWithinImage(self, imagePath, dst):
-        PILImage = Image.open(imagePath)
-        trafficLightNumpyImages = self.trafficLightDetector.detectTrafficLightsWithinNumpyImage(
-            PILImage2numpyImage(PILImage))
-        self.saveTrafficLights(PILImage, trafficLightNumpyImages, dst)
+        numpyImage = loadNumpyImage(imagePath)
+        trafficLightNumpyImages = self.trafficLightDetector.detectTrafficLightsWithinNumpyImage(numpyImage)
+        self.saveTrafficLights(imagePath, trafficLightNumpyImages, dst)
 
-    def saveTrafficLights(self, PILImage, trafficLightNumpyImages, dst):
+    def saveTrafficLights(self, filename, trafficLightNumpyImages, dst):
         for i, trafficLightNumpyImage in enumerate(trafficLightNumpyImages):
-            self.saveTrafficLight(trafficLightNumpyImage, self.createFileName(dst, PILImage, i + 1))
+            self.saveTrafficLight(trafficLightNumpyImage, self.createFileName(dst, filename, i + 1))
 
-    def createFileName(self, dst, image, i):
-        return dst + '/' + self.getNumberedFileName(image.filename, i)
+    def createFileName(self, dst, filename, i):
+        return dst + '/' + self.getNumberedFileName(filename, i)
 
     def getNumberedFileName(self, filename, i):
         root, extension = os.path.splitext(os.path.basename(filename))
@@ -60,5 +59,6 @@ class TrafficLightExtractor:
 
 
 if __name__ == '__main__':
-    trafficLightExtractor = TrafficLightExtractor('data/rfcn_resnet101_coco_2018_01_28/frozen_inference_graph.pb')
+    trafficLightExtractor = TrafficLightExtractor(
+        TrafficLightDetector('data/rfcn_resnet101_coco_2018_01_28/frozen_inference_graph.pb'))
     trafficLightExtractor.extractAndSaveTrafficLights(srcDir='data/simulator_images', dstDir='data/trafficlight_images')
