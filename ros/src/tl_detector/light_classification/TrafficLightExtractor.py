@@ -40,12 +40,13 @@ class TrafficLightExtractor:
 
     def detectAndSaveTrafficLightsWithinImage(self, imagePath, dst):
         PILImage = Image.open(imagePath)
-        boxes = self.trafficLightDetector.detectTrafficLightsWithinNumpyImage(PILImage2numpyImage(PILImage))
-        self.saveTrafficLights(PILImage, boxes, dst)
+        trafficLightNumpyImages = self.trafficLightDetector.detectTrafficLightsWithinNumpyImage(
+            PILImage2numpyImage(PILImage))
+        self.saveTrafficLights(PILImage, trafficLightNumpyImages, dst)
 
-    def saveTrafficLights(self, PILImage, boxes, dst):
-        for i, box in enumerate(boxes):
-            self.saveTrafficLight(PILImage, box, self.createFileName(dst, PILImage, i + 1))
+    def saveTrafficLights(self, PILImage, trafficLightNumpyImages, dst):
+        for i, trafficLightNumpyImage in enumerate(trafficLightNumpyImages):
+            self.saveTrafficLight(PILImage, trafficLightNumpyImage, self.createFileName(dst, PILImage, i + 1))
 
     def createFileName(self, dst, image, i):
         return dst + '/' + self.getNumberedFileName(image.filename, i)
@@ -54,10 +55,11 @@ class TrafficLightExtractor:
         root, extension = os.path.splitext(os.path.basename(filename))
         return root + '_' + str(i) + extension
 
-    def saveTrafficLight(self, PILImage, box, filename):
-        trafficLight = self.extractTrafficLight(box, PILImage)
+    def saveTrafficLight(self, PILImage, trafficLightNumpyImage, filename):
+        trafficLight = Image.fromarray(trafficLightNumpyImage)
         trafficLight.save(filename)
 
+    # TODO: remove method
     def extractTrafficLight(self, box, PILImage):
         return PILImage.crop(self.adaptBox2Image(box, PILImage))
 
