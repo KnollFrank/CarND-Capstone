@@ -5,6 +5,8 @@ from enum import Enum
 from keras.models import load_model
 from keras.preprocessing import image
 
+from helper import numpyImage2PILImage
+
 
 class TrafficLight(Enum):
     RED = 1
@@ -21,37 +23,38 @@ class TrafficLightClassifier:
         self.trafficLightDetector = trafficLightDetector
 
     def classifyTrafficLights(self, numpyImage):
-        boxes = self.trafficLightDetector.detectTrafficLightsWithinNumpyImage(numpyImage)
+        trafficLightNumpyImages = self.trafficLightDetector.detectTrafficLightsWithinNumpyImage(numpyImage)
         trafficLights = []
-        self.saveTrafficLights(numpyImage, boxes, trafficLights)
+        self.saveTrafficLights(numpyImage, trafficLightNumpyImages, trafficLights)
         return trafficLights
 
     # TODO: refactor
-    def saveTrafficLights(self, image, boxes, trafficLights):
-        for box in boxes:
-            self.saveTrafficLight(image, box, trafficLights)
+    def saveTrafficLights(self, numpyImage, trafficLightNumpyImages, trafficLights):
+        for trafficLightNumpyImage in trafficLightNumpyImages:
+            self.saveTrafficLight(numpyImage, trafficLightNumpyImage, trafficLights)
 
-    def saveTrafficLight(self, image, box, trafficLights):
-        trafficLightImage = self.extractTrafficLight(box, image)
-        color = self.detectColor(trafficLightImage)
+    def saveTrafficLight(self, numpyImage, trafficLightNumpyImage, trafficLights):
+        # trafficLightPILImage = self.extractTrafficLight(trafficLightNumpyImage, numpyImage)
+        color = self.detectColor(trafficLightNumpyImage)
         trafficLights.append(color)
 
-    def extractTrafficLight(self, box, image):
-        image = Image.fromarray(image.astype('uint8'), 'RGB')
-        return image.crop(self.adaptBox2Image(box, image))
+    def extractTrafficLight(self, trafficLightNumpyImage, PILImage):
+        PILImage = Image.fromarray(PILImage.astype('uint8'), 'RGB')
+        return PILImage.crop(self.adaptBox2Image(trafficLightNumpyImage, PILImage))
 
-    def adaptBox2Image(self, box, image):
-        width, height = image.size
-        left = box[1] * width
-        upper = box[0] * height
-        right = box[3] * width
-        lower = box[2] * height
+    def adaptBox2Image(self, trafficLightNumpyImage, numpyImage):
+        width, height = numpyImage.size
+        left = trafficLightNumpyImage[1] * width
+        upper = trafficLightNumpyImage[0] * height
+        right = trafficLightNumpyImage[3] * width
+        lower = trafficLightNumpyImage[2] * height
         return map(int, (left, upper, right, lower))
 
-    def detectColor(self, img):
+    def detectColor(self, trafficLightNumpyImage):
         img_height, img_width = 120, 50
-        img = img.resize((img_width, img_height), Image.ANTIALIAS)
-        x = image.img_to_array(img)
+        trafficLightPILImage = numpyImage2PILImage(trafficLightNumpyImage)
+        trafficLightPILImage = trafficLightPILImage.resize((img_width, img_height), Image.ANTIALIAS)
+        x = image.img_to_array(trafficLightPILImage)
         x = np.expand_dims(x, axis=0)
         labels = {0: TrafficLight.GREEN, 1: TrafficLight.RED, 3: TrafficLight.YELLOW}
         with self.graph.as_default():
