@@ -31,6 +31,7 @@ class TrafficLightProvider:
     def detectTrafficLightsWithin(self, image):
         return self.run_inference_for_single_image(self.load_image_into_numpy_array(image))
 
+    # TODO: refactor
     def detectTrafficLightsWithin2(self, image):
         return self.run_inference_for_single_image(image)
 

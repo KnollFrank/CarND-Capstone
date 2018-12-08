@@ -1,4 +1,4 @@
-from TrafficLightProvider import TrafficLightProvider
+from TrafficLightDetector import TrafficLightDetector
 from utilities import mkdir
 
 import os
@@ -14,7 +14,7 @@ from object_detection.utils import label_map_util
 class TrafficLightExtractor:
 
     def __init__(self, PATH_TO_FROZEN_GRAPH):
-        self.trafficLightProvider = TrafficLightProvider(PATH_TO_FROZEN_GRAPH)
+        self.trafficLightDetector = TrafficLightDetector(PATH_TO_FROZEN_GRAPH)
 
     def extractAndSaveTrafficLights(self, srcDir, dstDir):
         self.extractAndSaveTrafficLights4Color('red', srcDir, dstDir)
@@ -38,7 +38,7 @@ class TrafficLightExtractor:
 
     def detectAndSaveTrafficLightsWithinImage(self, imagePath, dst):
         image = Image.open(imagePath)
-        output_dict = self.trafficLightProvider.detectTrafficLightsWithin(image)
+        output_dict = self.trafficLightDetector.detectTrafficLightsWithin(image)
         self.saveTrafficLights(image, output_dict['detection_boxes'], output_dict['detection_classes'], dst)
 
     def saveTrafficLights(self, image, boxes, classes, dst):

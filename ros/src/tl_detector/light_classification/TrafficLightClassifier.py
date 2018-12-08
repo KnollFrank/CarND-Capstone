@@ -1,6 +1,6 @@
 from enum import Enum
 
-from TrafficLightProvider import TrafficLightProvider
+from TrafficLightDetector import TrafficLightDetector
 from PIL import Image
 from keras.models import load_model
 import numpy as np
