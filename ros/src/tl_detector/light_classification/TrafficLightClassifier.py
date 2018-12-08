@@ -20,10 +20,10 @@ class TrafficLightClassifier:
         self.graph = tf.get_default_graph()
         self.trafficLightDetector = trafficLightDetector
 
-    def classifyTrafficLights(self, image):
-        boxes = self.trafficLightDetector.detectTrafficLightsWithinNumpyImage(image)
+    def classifyTrafficLights(self, numpyImage):
+        boxes = self.trafficLightDetector.detectTrafficLightsWithinNumpyImage(numpyImage)
         trafficLights = []
-        self.saveTrafficLights(image, boxes, trafficLights)
+        self.saveTrafficLights(numpyImage, boxes, trafficLights)
         return trafficLights
 
     # TODO: refactor
