@@ -8,6 +8,7 @@ import sys
 from PIL import Image
 import glob
 
+# TODO: remove the following three lines:
 sys.path.append('/home/frankknoll/udacity/SDCND/models/research')
 from object_detection.utils import ops as utils_ops
 from object_detection.utils import label_map_util
@@ -42,9 +43,9 @@ class TrafficLightExtractor:
         boxes = self.trafficLightDetector.detectTrafficLightsWithinNumpyImage(PILImage2numpyImage(PILImage))
         self.saveTrafficLights(PILImage, boxes, dst)
 
-    def saveTrafficLights(self, image, boxes, dst):
+    def saveTrafficLights(self, PILImage, boxes, dst):
         for i, box in enumerate(boxes):
-            self.saveTrafficLight(image, box, self.createFileName(dst, image, i + 1))
+            self.saveTrafficLight(PILImage, box, self.createFileName(dst, PILImage, i + 1))
 
     def createFileName(self, dst, image, i):
         return dst + '/' + self.getNumberedFileName(image.filename, i)
@@ -53,15 +54,15 @@ class TrafficLightExtractor:
         root, extension = os.path.splitext(os.path.basename(filename))
         return root + '_' + str(i) + extension
 
-    def saveTrafficLight(self, image, box, filename):
-        trafficLight = self.extractTrafficLight(box, image)
+    def saveTrafficLight(self, PILImage, box, filename):
+        trafficLight = self.extractTrafficLight(box, PILImage)
         trafficLight.save(filename)
 
-    def extractTrafficLight(self, box, image):
-        return image.crop(self.adaptBox2Image(box, image))
+    def extractTrafficLight(self, box, PILImage):
+        return PILImage.crop(self.adaptBox2Image(box, PILImage))
 
-    def adaptBox2Image(self, box, image):
-        width, height = image.size
+    def adaptBox2Image(self, box, PILImage):
+        width, height = PILImage.size
         left = box[1] * width
         upper = box[0] * height
         right = box[3] * width

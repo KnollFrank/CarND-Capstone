@@ -26,6 +26,7 @@ class TrafficLightDetector:
 
     def detectTrafficLightsWithinNumpyImage(self, numpyImage):
         output_dict = self.run_inference_for_single_image(numpyImage)
+        # TODO: refactor by simplifying
         trafficLightsBoxes = []
         for i, box in enumerate(output_dict['detection_boxes']):
             if self.isTrafficLight(output_dict['detection_classes'][i]):
