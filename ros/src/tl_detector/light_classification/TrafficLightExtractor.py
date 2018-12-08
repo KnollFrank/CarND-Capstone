@@ -46,7 +46,7 @@ class TrafficLightExtractor:
 
     def saveTrafficLights(self, PILImage, trafficLightNumpyImages, dst):
         for i, trafficLightNumpyImage in enumerate(trafficLightNumpyImages):
-            self.saveTrafficLight(PILImage, trafficLightNumpyImage, self.createFileName(dst, PILImage, i + 1))
+            self.saveTrafficLight(trafficLightNumpyImage, self.createFileName(dst, PILImage, i + 1))
 
     def createFileName(self, dst, image, i):
         return dst + '/' + self.getNumberedFileName(image.filename, i)
@@ -55,21 +55,9 @@ class TrafficLightExtractor:
         root, extension = os.path.splitext(os.path.basename(filename))
         return root + '_' + str(i) + extension
 
-    def saveTrafficLight(self, PILImage, trafficLightNumpyImage, filename):
+    def saveTrafficLight(self, trafficLightNumpyImage, filename):
         trafficLight = Image.fromarray(trafficLightNumpyImage)
         trafficLight.save(filename)
-
-    # TODO: remove method
-    def extractTrafficLight(self, box, PILImage):
-        return PILImage.crop(self.adaptBox2Image(box, PILImage))
-
-    def adaptBox2Image(self, box, PILImage):
-        width, height = PILImage.size
-        left = box[1] * width
-        upper = box[0] * height
-        right = box[3] * width
-        lower = box[2] * height
-        return map(int, (left, upper, right, lower))
 
 
 if __name__ == '__main__':
