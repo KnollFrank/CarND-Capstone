@@ -27,13 +27,15 @@ train_datagen = ImageDataGenerator(
     rescale=1. / 255,
     shear_range=0.2,
     zoom_range=0.2,
-    horizontal_flip=True)
+    horizontal_flip=True,
+    validation_split=0.2)
 
 train_generator = train_datagen.flow_from_directory(
     train_data_dir,
     target_size=(img_height, img_width),
     batch_size=batch_size,
-    class_mode='categorical')
+    class_mode='categorical',
+    subset='training')
 
 nb_train_samples = train_generator.n
 
@@ -41,7 +43,8 @@ validation_generator = train_datagen.flow_from_directory(
     train_data_dir,
     target_size=(img_height, img_width),
     batch_size=batch_size,
-    class_mode='categorical')
+    class_mode='categorical',
+    subset='validation')
 
 nb_validation_samples = validation_generator.n
 
@@ -103,7 +106,8 @@ def save_bottleneck_features():
         target_size=(img_height, img_width),
         batch_size=1,
         class_mode=None,
-        shuffle=False)
+        shuffle=False,
+        subset='training')
     bottleneck_features_train = model.predict_generator(generator, generator.n // generator.batch_size)
     np.save(open(bottleneck_features_train_file, 'wb'), bottleneck_features_train)
     np.save(open(bottleneck_features_train_labels, 'wb'), generator.classes)
@@ -114,7 +118,8 @@ def save_bottleneck_features():
         target_size=(img_height, img_width),
         batch_size=1,
         class_mode=None,
-        shuffle=False)
+        shuffle=False,
+        subset='validation')
     bottleneck_features_validation = model.predict_generator(generator, generator.n // generator.batch_size)
     np.save(open(bottleneck_features_validation_file, 'wb'), bottleneck_features_validation)
     np.save(open(bottleneck_features_validation_labels, 'wb'), generator.classes)
