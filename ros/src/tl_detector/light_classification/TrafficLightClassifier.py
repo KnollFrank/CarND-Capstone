@@ -34,23 +34,11 @@ class TrafficLightClassifier:
             self.saveTrafficLight(numpyImage, trafficLightNumpyImage, trafficLights)
 
     def saveTrafficLight(self, numpyImage, trafficLightNumpyImage, trafficLights):
-        # trafficLightPILImage = self.extractTrafficLight(trafficLightNumpyImage, numpyImage)
         color = self.detectColor(trafficLightNumpyImage)
         trafficLights.append(color)
 
-    def extractTrafficLight(self, trafficLightNumpyImage, PILImage):
-        PILImage = Image.fromarray(PILImage.astype('uint8'), 'RGB')
-        return PILImage.crop(self.adaptBox2Image(trafficLightNumpyImage, PILImage))
-
-    def adaptBox2Image(self, trafficLightNumpyImage, numpyImage):
-        width, height = numpyImage.size
-        left = trafficLightNumpyImage[1] * width
-        upper = trafficLightNumpyImage[0] * height
-        right = trafficLightNumpyImage[3] * width
-        lower = trafficLightNumpyImage[2] * height
-        return map(int, (left, upper, right, lower))
-
     def detectColor(self, trafficLightNumpyImage):
+        # TODO: refactor
         img_height, img_width = 120, 50
         trafficLightPILImage = numpyImage2PILImage(trafficLightNumpyImage)
         trafficLightPILImage = trafficLightPILImage.resize((img_width, img_height), Image.ANTIALIAS)
