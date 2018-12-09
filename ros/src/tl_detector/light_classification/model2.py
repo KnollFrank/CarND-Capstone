@@ -64,30 +64,22 @@ def save_bottleneck_features():
         horizontal_flip=True,
         validation_split=0.2)
 
-    # TODO: DRY with code near end of this function
-    print('test data:')
-    generator = train_datagen.flow_from_directory(
-        train_data_dir,
-        target_size=(img_height, img_width),
-        batch_size=1,
-        class_mode=None,
-        shuffle=False,
-        subset='training')
-    bottleneck_features_train = model.predict_generator(generator, generator.n // generator.batch_size)
-    np.save(open(bottleneck_features_train_file, 'wb'), bottleneck_features_train)
-    np.save(open(bottleneck_features_train_labels, 'wb'), generator.classes)
+    def save_bottleneck_features(subset, bottleneck_features_file, bottleneck_features_labels):
+        generator = train_datagen.flow_from_directory(
+            train_data_dir,
+            target_size=(img_height, img_width),
+            batch_size=1,
+            class_mode=None,
+            shuffle=False,
+            subset=subset)
+        bottleneck_features_train = model.predict_generator(generator, generator.n // generator.batch_size)
+        np.save(open(bottleneck_features_file, 'wb'), bottleneck_features_train)
+        np.save(open(bottleneck_features_labels, 'wb'), generator.classes)
 
+    print('test data:')
+    save_bottleneck_features('training', bottleneck_features_train_file, bottleneck_features_train_labels)
     print('validation data:')
-    generator = train_datagen.flow_from_directory(
-        train_data_dir,
-        target_size=(img_height, img_width),
-        batch_size=1,
-        class_mode=None,
-        shuffle=False,
-        subset='validation')
-    bottleneck_features_validation = model.predict_generator(generator, generator.n // generator.batch_size)
-    np.save(open(bottleneck_features_validation_file, 'wb'), bottleneck_features_validation)
-    np.save(open(bottleneck_features_validation_labels, 'wb'), generator.classes)
+    save_bottleneck_features('validation', bottleneck_features_validation_file, bottleneck_features_validation_labels)
 
 
 def train_top_model():
