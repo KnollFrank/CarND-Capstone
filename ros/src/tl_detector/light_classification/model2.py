@@ -31,20 +31,6 @@ train_datagen = ImageDataGenerator(
     horizontal_flip=True,
     validation_split=0.2)
 
-train_generator = train_datagen.flow_from_directory(
-    train_data_dir,
-    target_size=(img_height, img_width),
-    batch_size=batch_size,
-    class_mode='categorical',
-    subset='training')
-
-validation_generator = train_datagen.flow_from_directory(
-    train_data_dir,
-    target_size=(img_height, img_width),
-    batch_size=batch_size,
-    class_mode='categorical',
-    subset='validation')
-
 
 def create_base_model():
     return applications.VGG16(weights='imagenet', include_top=False, input_shape=(img_height, img_width, 3))
