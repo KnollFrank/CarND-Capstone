@@ -36,15 +36,8 @@ def create_top_model(input_shape):
 
 # see https://gist.github.com/fchollet/f35fbc80e066a49d65f1688a7e99f069
 def save_bottleneck_features():
-    bottleneck_features_train_file = 'bottleneck_features_train.npy'
-    bottleneck_features_validation_file = 'bottleneck_features_validation.npy'
-    bottleneck_features_train_labels = 'bottleneck_features_train_labels.npy'
-    bottleneck_features_validation_labels = 'bottleneck_features_validation_labels.npy'
-
-    # build the network
     model = create_base_model()
 
-    # this is the augmentation configuration we will use for training
     train_datagen = ImageDataGenerator(
         rescale=1. / 255,
         shear_range=0.2,
@@ -52,7 +45,7 @@ def save_bottleneck_features():
         horizontal_flip=True,
         validation_split=0.2)
 
-    def save_bottleneck_features(subset, bottleneck_features_file, bottleneck_features_labels):
+    def save_bottleneck_features(subset, x_file, y_file):
         generator = train_datagen.flow_from_directory(
             train_data_dir,
             target_size=(img_height, img_width),
@@ -60,35 +53,44 @@ def save_bottleneck_features():
             class_mode=None,
             shuffle=False,
             subset=subset)
-        bottleneck_features_train = model.predict_generator(generator, generator.n // generator.batch_size)
-        np.save(open(bottleneck_features_file, 'wb'), bottleneck_features_train)
-        np.save(open(bottleneck_features_labels, 'wb'), generator.classes)
+
+        x_bottleneck = model.predict_generator(generator, generator.n // generator.batch_size)
+        np.save(open(x_file, 'wb'), x_bottleneck)
+
+        y_bottleneck = generator.classes
+        np.save(open(y_file, 'wb'), y_bottleneck)
+
+    x_train_file = 'x_train.npy'
+    y_train_file = 'y_train.npy'
+
+    x_validation_file = 'x_validation.npy'
+    y_validation_file = 'y_validation.npy'
 
     print('test data:')
-    save_bottleneck_features('training', bottleneck_features_train_file, bottleneck_features_train_labels)
+    save_bottleneck_features('training', x_train_file, y_train_file)
+
     print('validation data:')
-    save_bottleneck_features('validation', bottleneck_features_validation_file, bottleneck_features_validation_labels)
+    save_bottleneck_features('validation', x_validation_file, y_validation_file)
 
-    return bottleneck_features_train_file, bottleneck_features_train_labels, bottleneck_features_validation_file, bottleneck_features_validation_labels
+    return x_train_file, y_train_file, x_validation_file, y_validation_file
 
 
-def train_top_model(bottleneck_features_train_file, bottleneck_features_train_labels,
-                    bottleneck_features_validation_file, bottleneck_features_validation_labels):
-    train_data = np.load(open(bottleneck_features_train_file, 'rb'))
-    train_labels = np.load(open(bottleneck_features_train_labels, 'rb'))
-    train_labels = np_utils.to_categorical(train_labels, num_classes)
+def train_top_model(x_train_file, y_train_file, x_validation_file, y_validation_file):
+    x_train = np.load(open(x_train_file, 'rb'))
+    y_train = np.load(open(y_train_file, 'rb'))
+    y_train = np_utils.to_categorical(y_train, num_classes)
 
-    validation_data = np.load(open(bottleneck_features_validation_file, 'rb'))
-    validation_labels = np.load(open(bottleneck_features_validation_labels, 'rb'))
-    validation_labels = np_utils.to_categorical(validation_labels, num_classes)
+    x_validation = np.load(open(x_validation_file, 'rb'))
+    y_validation = np.load(open(y_validation_file, 'rb'))
+    y_validation = np_utils.to_categorical(y_validation, num_classes)
 
-    model = create_top_model(train_data.shape[1:])
+    model = create_top_model(x_train.shape[1:])
     model.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['accuracy'])
-    model.fit(train_data,
-              train_labels,
+    model.fit(x_train,
+              y_train,
               epochs=epochs,
               batch_size=batch_size,
-              validation_data=(validation_data, validation_labels))
+              validation_data=(x_validation, y_validation))
     # callbacks=[ModelCheckpoint(filepath=top_model_weights_path, verbose=1, save_best_only=True)])
     model.save_weights(top_model_weights_path)
 
@@ -115,7 +117,6 @@ def create_and_save_initialized_top_model_on_top_of_base_model():
 
 
 if __name__ == '__main__':
-    bottleneck_features_train_file, bottleneck_features_train_labels, bottleneck_features_validation_file, bottleneck_features_validation_labels = save_bottleneck_features()
-    train_top_model(bottleneck_features_train_file, bottleneck_features_train_labels,
-                    bottleneck_features_validation_file, bottleneck_features_validation_labels)
+    x_train_file, y_train_file, x_validation_file, y_validation_file = save_bottleneck_features()
+    train_top_model(x_train_file, y_train_file, x_validation_file, y_validation_file)
     create_and_save_initialized_top_model_on_top_of_base_model()
