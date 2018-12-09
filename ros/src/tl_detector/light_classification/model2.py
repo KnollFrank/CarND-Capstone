@@ -1,5 +1,11 @@
-from keras import backend as K
-from keras.preprocessing.image import ImageDataGenerator, array_to_img, img_to_array, load_img
+from keras.preprocessing.image import ImageDataGenerator
+from keras import optimizers
+from keras import applications
+# from squeezenet import SqueezeNet
+import numpy as np
+from keras.models import Sequential
+from keras.layers import Dropout, Flatten, Dense
+from keras.utils import np_utils
 
 # dimensions of our images.
 img_height, img_width = 120, 50
@@ -17,11 +23,6 @@ num_classes = 3
 epochs = 50
 batch_size = 16
 
-if K.image_data_format() == 'channels_first':
-    input_shape = (3, img_height, img_width)
-else:
-    input_shape = (img_height, img_width, 3)
-
 # this is the augmentation configuration we will use for training
 train_datagen = ImageDataGenerator(
     rescale=1. / 255,
@@ -37,8 +38,6 @@ train_generator = train_datagen.flow_from_directory(
     class_mode='categorical',
     subset='training')
 
-nb_train_samples = train_generator.n
-
 validation_generator = train_datagen.flow_from_directory(
     train_data_dir,
     target_size=(img_height, img_width),
@@ -46,22 +45,10 @@ validation_generator = train_datagen.flow_from_directory(
     class_mode='categorical',
     subset='validation')
 
-nb_validation_samples = validation_generator.n
-
-from keras import applications
-
-
-# from squeezenet import SqueezeNet
 
 def create_base_model():
     return applications.VGG16(weights='imagenet', include_top=False, input_shape=(img_height, img_width, 3))
     # return SqueezeNet(weights='imagenet', include_top=False, input_shape=(img_height, img_width, 3))
-
-
-from keras.preprocessing.image import ImageDataGenerator
-from keras import optimizers
-from keras.models import Sequential
-from keras.layers import Dropout, Flatten, Dense
 
 
 def create_top_model(input_shape):
@@ -87,14 +74,6 @@ def create_initialized_top_model_on_top_of_base_model():
 
 
 # see https://gist.github.com/fchollet/f35fbc80e066a49d65f1688a7e99f069
-import numpy as np
-from keras.preprocessing.image import ImageDataGenerator
-from keras.models import Sequential
-from keras.layers import Dropout, Flatten, Dense
-from keras.callbacks import ModelCheckpoint
-from keras.utils import np_utils
-
-
 def save_bottleneck_features():
     # build the network
     model = create_base_model()
@@ -152,30 +131,4 @@ model = create_initialized_top_model_on_top_of_base_model()
 model.compile(loss='categorical_crossentropy',
               optimizer=optimizers.SGD(lr=1e-4, momentum=0.9),
               metrics=['accuracy'])
-# model.save_weights(modelFile)
 model.save(modelFile)
-
-from keras.preprocessing import image
-
-
-def path_to_tensor(img_path):
-    # loads RGB image as PIL.Image.Image type
-    img = image.load_img(img_path, target_size=(img_height, img_width))
-    # convert PIL.Image.Image type to 3D tensor with shape (224, 224, 3)
-    x = image.img_to_array(img)
-    # convert 3D tensor to 4D tensor with shape (1, 224, 224, 3) and return 4D tensor
-    return np.expand_dims(x, axis=0)
-
-
-#from keras.models import load_model
-
-#del model
-#model = load_model(modelFile)
-
-#img = path_to_tensor('data/trafficlight_images/green/img_0178_green_1.jpg')
-# img = path_to_tensor('data/trafficlight_images/red/img_0001_red_1.jpg')
-#labels = {0: 'green', 1: 'red', 3: 'yellow'}
-#labels[np.argmax(model.predict(img))]
-
-#if __name__ == '__main__':
-#    pass
