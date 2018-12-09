@@ -26,12 +26,9 @@ class TrafficLightDetector:
 
     def detectTrafficLightsWithinNumpyImage(self, numpyImage):
         output_dict = self.run_inference_for_single_image(numpyImage)
-        trafficLightNumpyImages = []
-        for i, box in enumerate(output_dict['detection_boxes']):
-            if self.isTrafficLight(output_dict['detection_classes'][i]):
-                trafficLightNumpyImage = self.crop(numpyImage, box)
-                trafficLightNumpyImages.append(trafficLightNumpyImage)
-
+        box_class_pairs = zip(output_dict['detection_boxes'], output_dict['detection_classes'])
+        box_trafficLightClass_pairs = filter(lambda (_, clazz): self.isTrafficLight(clazz), box_class_pairs)
+        trafficLightNumpyImages = map(lambda (box, _): self.crop(numpyImage, box), box_trafficLightClass_pairs)
         return trafficLightNumpyImages
 
     def isTrafficLight(self, clazz):
