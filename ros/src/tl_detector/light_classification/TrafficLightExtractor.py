@@ -1,16 +1,9 @@
-from TrafficLightDetector import TrafficLightDetector
-from utilities import mkdir, PILImage2numpyImage, numpyImage2PILImage, loadNumpyImage
-
-import os
-import sys
-
-from PIL import Image
 import glob
+import os
 
-# TODO: remove the following three lines:
-sys.path.append('/home/frankknoll/udacity/SDCND/models/research')
-from object_detection.utils import ops as utils_ops
-from object_detection.utils import label_map_util
+from TrafficLightDetector import TrafficLightDetector
+from utilities import mkdir, numpyImage2PILImage, loadNumpyImage
+
 
 class TrafficLightExtractor:
 

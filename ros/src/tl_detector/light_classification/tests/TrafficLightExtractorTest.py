@@ -1,10 +1,15 @@
-from unittest import TestCase
+import os
 import os.path
+import shutil
+import tempfile
+from unittest import TestCase
 
 from TrafficLightDetector import TrafficLightDetector
 from TrafficLightExtractor import TrafficLightExtractor
-import shutil, tempfile
 
+
+def get_script_path():
+    return os.path.dirname(os.path.realpath(__file__))
 
 class TrafficLightExtractorTest(TestCase):
 
@@ -17,10 +22,11 @@ class TrafficLightExtractorTest(TestCase):
     def test_extract_traffic_lights(self):
         # GIVEN
         trafficLightExtractor = TrafficLightExtractor(
-            TrafficLightDetector('../../data/rfcn_resnet101_coco_2018_01_28/frozen_inference_graph.pb'))
+            TrafficLightDetector(
+                get_script_path() + '/../data/rfcn_resnet101_coco_2018_01_28/frozen_inference_graph.pb'))
 
         # WHEN
-        trafficLightExtractor.extractAndSaveTrafficLights(srcDir='../images', dstDir=self.test_dir)
+        trafficLightExtractor.extractAndSaveTrafficLights(srcDir=get_script_path() + '/images', dstDir=self.test_dir)
 
         # THEN
         # check red
