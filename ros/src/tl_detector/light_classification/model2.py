@@ -23,14 +23,6 @@ num_classes = 3
 epochs = 50
 batch_size = 16
 
-# this is the augmentation configuration we will use for training
-train_datagen = ImageDataGenerator(
-    rescale=1. / 255,
-    shear_range=0.2,
-    zoom_range=0.2,
-    horizontal_flip=True,
-    validation_split=0.2)
-
 
 def create_base_model():
     return applications.VGG16(weights='imagenet', include_top=False, input_shape=(img_height, img_width, 3))
@@ -63,6 +55,14 @@ def create_initialized_top_model_on_top_of_base_model():
 def save_bottleneck_features():
     # build the network
     model = create_base_model()
+
+    # this is the augmentation configuration we will use for training
+    train_datagen = ImageDataGenerator(
+        rescale=1. / 255,
+        shear_range=0.2,
+        zoom_range=0.2,
+        horizontal_flip=True,
+        validation_split=0.2)
 
     # TODO: DRY with code near end of this function
     print('test data:')
