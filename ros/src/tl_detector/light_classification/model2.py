@@ -73,7 +73,7 @@ def save_bottleneck_features():
     return x_train_file, y_train_file, x_validation_file, y_validation_file
 
 
-def train_and_save_top_model(x_train_file, y_train_file, x_validation_file, y_validation_file, top_model_weights_file):
+def train_and_save_top_model(x_train_file, y_train_file, x_validation_file, y_validation_file):
     x_train = np.load(open(x_train_file, 'rb'))
     y_train = np.load(open(y_train_file, 'rb'))
     y_train = np_utils.to_categorical(y_train, num_classes)
@@ -90,7 +90,9 @@ def train_and_save_top_model(x_train_file, y_train_file, x_validation_file, y_va
               batch_size=batch_size,
               validation_data=(x_validation, y_validation))
     # callbacks=[ModelCheckpoint(filepath=top_model_weights_path, verbose=1, save_best_only=True)])
+    top_model_weights_file = 'top_model_weights.h5'
     model.save_weights(top_model_weights_file)
+    return top_model_weights_file
 
 
 def create_initialized_top_model_on_top_of_base_model(top_model_weights_file):
@@ -115,7 +117,6 @@ def create_and_save_initialized_top_model_on_top_of_base_model(top_model_weights
 
 
 if __name__ == '__main__':
-    top_model_weights_file = 'top_model_weights.h5'
     x_train_file, y_train_file, x_validation_file, y_validation_file = save_bottleneck_features()
-    train_and_save_top_model(x_train_file, y_train_file, x_validation_file, y_validation_file, top_model_weights_file)
+    top_model_weights_file = train_and_save_top_model(x_train_file, y_train_file, x_validation_file, y_validation_file)
     create_and_save_initialized_top_model_on_top_of_base_model(top_model_weights_file)
