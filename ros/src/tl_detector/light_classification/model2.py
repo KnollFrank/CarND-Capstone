@@ -11,8 +11,6 @@ from keras.utils import np_utils
 img_height, img_width = 120, 50
 
 train_data_dir = 'data/trafficlight_images'
-# TODO: rename to top_model_weights_file
-top_model_weights_path = 'bottleneck_fc_model.h5'
 modelFile = 'model.h5'
 
 num_classes = 3
@@ -75,7 +73,7 @@ def save_bottleneck_features():
     return x_train_file, y_train_file, x_validation_file, y_validation_file
 
 
-def train_top_model(x_train_file, y_train_file, x_validation_file, y_validation_file):
+def train_and_save_top_model(x_train_file, y_train_file, x_validation_file, y_validation_file, top_model_weights_file):
     x_train = np.load(open(x_train_file, 'rb'))
     y_train = np.load(open(y_train_file, 'rb'))
     y_train = np_utils.to_categorical(y_train, num_classes)
@@ -92,14 +90,14 @@ def train_top_model(x_train_file, y_train_file, x_validation_file, y_validation_
               batch_size=batch_size,
               validation_data=(x_validation, y_validation))
     # callbacks=[ModelCheckpoint(filepath=top_model_weights_path, verbose=1, save_best_only=True)])
-    model.save_weights(top_model_weights_path)
+    model.save_weights(top_model_weights_file)
 
 
-def create_initialized_top_model_on_top_of_base_model():
+def create_initialized_top_model_on_top_of_base_model(top_model_weights_file):
     base_model = create_base_model()
 
     top_model = create_top_model(base_model.output_shape[1:])
-    top_model.load_weights(top_model_weights_path)
+    top_model.load_weights(top_model_weights_file)
 
     model = Sequential()
     model.add(base_model)
@@ -108,8 +106,8 @@ def create_initialized_top_model_on_top_of_base_model():
     return model
 
 
-def create_and_save_initialized_top_model_on_top_of_base_model():
-    model = create_initialized_top_model_on_top_of_base_model()
+def create_and_save_initialized_top_model_on_top_of_base_model(top_model_weights_file):
+    model = create_initialized_top_model_on_top_of_base_model(top_model_weights_file)
     model.compile(loss='categorical_crossentropy',
                   optimizer=optimizers.SGD(lr=1e-4, momentum=0.9),
                   metrics=['accuracy'])
@@ -117,6 +115,7 @@ def create_and_save_initialized_top_model_on_top_of_base_model():
 
 
 if __name__ == '__main__':
+    top_model_weights_file = 'top_model_weights.h5'
     x_train_file, y_train_file, x_validation_file, y_validation_file = save_bottleneck_features()
-    train_top_model(x_train_file, y_train_file, x_validation_file, y_validation_file)
-    create_and_save_initialized_top_model_on_top_of_base_model()
+    train_and_save_top_model(x_train_file, y_train_file, x_validation_file, y_validation_file, top_model_weights_file)
+    create_and_save_initialized_top_model_on_top_of_base_model(top_model_weights_file)
