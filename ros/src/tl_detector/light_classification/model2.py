@@ -38,18 +38,6 @@ def create_top_model(input_shape):
     return model
 
 
-def create_initialized_top_model_on_top_of_base_model():
-    base_model = create_base_model()
-
-    top_model = create_top_model(base_model.output_shape[1:])
-    top_model.load_weights(top_model_weights_path)
-
-    model = Sequential()
-    model.add(base_model)
-    model.add(top_model)
-
-    return model
-
 
 # see https://gist.github.com/fchollet/f35fbc80e066a49d65f1688a7e99f069
 def save_bottleneck_features():
@@ -102,11 +90,28 @@ def train_top_model():
     model.save_weights(top_model_weights_path)
 
 
-save_bottleneck_features()
-train_top_model()
+def create_initialized_top_model_on_top_of_base_model():
+    base_model = create_base_model()
 
-model = create_initialized_top_model_on_top_of_base_model()
-model.compile(loss='categorical_crossentropy',
-              optimizer=optimizers.SGD(lr=1e-4, momentum=0.9),
-              metrics=['accuracy'])
-model.save(modelFile)
+    top_model = create_top_model(base_model.output_shape[1:])
+    top_model.load_weights(top_model_weights_path)
+
+    model = Sequential()
+    model.add(base_model)
+    model.add(top_model)
+
+    return model
+
+
+def create_and_save_initialized_top_model_on_top_of_base_model():
+    model = create_initialized_top_model_on_top_of_base_model()
+    model.compile(loss='categorical_crossentropy',
+                  optimizer=optimizers.SGD(lr=1e-4, momentum=0.9),
+                  metrics=['accuracy'])
+    model.save(modelFile)
+
+
+if __name__ == '__main__':
+    save_bottleneck_features()
+    train_top_model()
+    create_and_save_initialized_top_model_on_top_of_base_model()
