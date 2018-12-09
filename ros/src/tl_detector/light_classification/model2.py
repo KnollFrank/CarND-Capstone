@@ -13,10 +13,6 @@ img_height, img_width = 120, 50
 train_data_dir = 'data/trafficlight_images'
 # TODO: rename to top_model_weights_file
 top_model_weights_path = 'bottleneck_fc_model.h5'
-bottleneck_features_train_file = 'bottleneck_features_train.npy'
-bottleneck_features_validation_file = 'bottleneck_features_validation.npy'
-bottleneck_features_train_labels = 'bottleneck_features_train_labels.npy'
-bottleneck_features_validation_labels = 'bottleneck_features_validation_labels.npy'
 modelFile = 'model.h5'
 
 num_classes = 3
@@ -38,9 +34,13 @@ def create_top_model(input_shape):
     return model
 
 
-
 # see https://gist.github.com/fchollet/f35fbc80e066a49d65f1688a7e99f069
 def save_bottleneck_features():
+    bottleneck_features_train_file = 'bottleneck_features_train.npy'
+    bottleneck_features_validation_file = 'bottleneck_features_validation.npy'
+    bottleneck_features_train_labels = 'bottleneck_features_train_labels.npy'
+    bottleneck_features_validation_labels = 'bottleneck_features_validation_labels.npy'
+
     # build the network
     model = create_base_model()
 
@@ -69,8 +69,11 @@ def save_bottleneck_features():
     print('validation data:')
     save_bottleneck_features('validation', bottleneck_features_validation_file, bottleneck_features_validation_labels)
 
+    return bottleneck_features_train_file, bottleneck_features_train_labels, bottleneck_features_validation_file, bottleneck_features_validation_labels
 
-def train_top_model():
+
+def train_top_model(bottleneck_features_train_file, bottleneck_features_train_labels,
+                    bottleneck_features_validation_file, bottleneck_features_validation_labels):
     train_data = np.load(open(bottleneck_features_train_file, 'rb'))
     train_labels = np.load(open(bottleneck_features_train_labels, 'rb'))
     train_labels = np_utils.to_categorical(train_labels, num_classes)
@@ -112,6 +115,7 @@ def create_and_save_initialized_top_model_on_top_of_base_model():
 
 
 if __name__ == '__main__':
-    save_bottleneck_features()
-    train_top_model()
+    bottleneck_features_train_file, bottleneck_features_train_labels, bottleneck_features_validation_file, bottleneck_features_validation_labels = save_bottleneck_features()
+    train_top_model(bottleneck_features_train_file, bottleneck_features_train_labels,
+                    bottleneck_features_validation_file, bottleneck_features_validation_labels)
     create_and_save_initialized_top_model_on_top_of_base_model()
