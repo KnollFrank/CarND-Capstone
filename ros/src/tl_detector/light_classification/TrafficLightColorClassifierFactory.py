@@ -8,6 +8,9 @@ from keras.layers import Dropout, Flatten, Dense
 from keras.utils import np_utils
 from utilities import mkdir
 
+IMG_WIDTH = 50
+IMG_HEIGHT = 120
+
 class TrafficLightColorClassifierFactory:
 
     def __init__(self, train_data_dir, img_height, img_width, epochs, modelFile):
@@ -19,7 +22,6 @@ class TrafficLightColorClassifierFactory:
         self.batch_size = 16
         self.num_classes = 3
         self.createTmpFileNames()
-
 
     def createTmpFileNames(self):
         directory = 'data/TrafficLightColorClassifier'
@@ -120,7 +122,9 @@ class TrafficLightColorClassifierFactory:
 
 
 if __name__ == '__main__':
-    classifierFactory = TrafficLightColorClassifierFactory(train_data_dir='data/trafficlight_images', img_height=120,
-                                                           img_width=50, epochs=50,
+    classifierFactory = TrafficLightColorClassifierFactory(train_data_dir='data/trafficlight_images',
+                                                           img_height=IMG_HEIGHT,
+                                                           img_width=IMG_WIDTH,
+                                                           epochs=50,
                                                            modelFile='model.h5')
     classifierFactory.createAndSaveClassifier()
