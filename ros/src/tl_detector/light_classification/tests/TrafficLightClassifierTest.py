@@ -2,7 +2,9 @@ from unittest import TestCase
 
 from PIL import Image
 
-from TrafficLightClassifier import TrafficLightClassifier, TrafficLightColor
+from TrafficLightClassifier import TrafficLightClassifier
+from TrafficLightColor import TrafficLightColor
+from TrafficLightColorClassifier import TrafficLightColorClassifier
 from TrafficLightDetector import TrafficLightDetector
 from TrafficLightExtractorTest import get_script_path
 from utilities import PILImage2numpyImage
@@ -21,8 +23,11 @@ class TrafficLightClassifierTest(TestCase):
 
     def shouldClassifyTrafficLights(self, imageFile, trafficLightColors):
         # Given
-        classifier = TrafficLightClassifier(get_script_path() + '/../model.h5', TrafficLightDetector(
-            get_script_path() + '/../data/rfcn_resnet101_coco_2018_01_28/frozen_inference_graph.pb'))
+
+        classifier = TrafficLightClassifier(
+            TrafficLightDetector(
+                get_script_path() + '/../data/rfcn_resnet101_coco_2018_01_28/frozen_inference_graph.pb'),
+            TrafficLightColorClassifier(get_script_path() + '/../model.h5'))
         image = PILImage2numpyImage(Image.open(imageFile))
 
         # When
