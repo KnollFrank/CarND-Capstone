@@ -7,13 +7,15 @@ from keras.models import Sequential
 from keras.layers import Dropout, Flatten, Dense
 from keras.utils import np_utils
 
+
 # dimensions of our images.
-img_height, img_width = 120, 50
 
 class TrafficLightColorClassifierFactory:
 
-    def __init__(self, train_data_dir, epochs, modelFile):
+    def __init__(self, train_data_dir, img_height, img_width, epochs, modelFile):
         self.train_data_dir = train_data_dir
+        self.img_height = img_height
+        self.img_width = img_width
         self.epochs = epochs
         self.modelFile = modelFile
 
@@ -33,8 +35,9 @@ class TrafficLightColorClassifierFactory:
         self.create_and_save_initialized_top_model_on_top_of_base_model()
 
     def create_base_model(self):
-        return applications.VGG16(weights='imagenet', include_top=False, input_shape=(img_height, img_width, 3))
-        # return SqueezeNet(weights='imagenet', include_top=False, input_shape=(img_height, img_width, 3))
+        return applications.VGG16(weights='imagenet', include_top=False,
+                                  input_shape=(self.img_height, self.img_width, 3))
+        # return SqueezeNet(weights='imagenet', include_top=False, input_shape=(self.img_height, self.img_width, 3))
 
     def create_top_model(self, input_shape):
         model = Sequential()
@@ -58,7 +61,7 @@ class TrafficLightColorClassifierFactory:
         def save_bottleneck_features(subset, x_file, y_file):
             generator = train_datagen.flow_from_directory(
                 self.train_data_dir,
-                target_size=(img_height, img_width),
+                target_size=(self.img_height, self.img_width),
                 batch_size=1,
                 class_mode=None,
                 shuffle=False,
@@ -116,6 +119,7 @@ class TrafficLightColorClassifierFactory:
 
 
 if __name__ == '__main__':
-    classifierFactory = TrafficLightColorClassifierFactory(train_data_dir='data/trafficlight_images', epochs=50,
+    classifierFactory = TrafficLightColorClassifierFactory(train_data_dir='data/trafficlight_images', img_height=120,
+                                                           img_width=50, epochs=50,
                                                            modelFile='model.h5')
     classifierFactory.createAndSaveClassifier()
