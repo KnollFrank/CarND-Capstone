@@ -16,11 +16,10 @@ class TrafficLightColorClassifierFactory:
         self.img_width = img_width
         self.epochs = epochs
         self.modelFile = modelFile
-
-        self.createTmpFileNames()
-
         self.batch_size = 16
         self.num_classes = 3
+        self.createTmpFileNames()
+
 
     def createTmpFileNames(self):
         directory = 'data/TrafficLightColorClassifier'
