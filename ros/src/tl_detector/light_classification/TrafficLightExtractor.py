@@ -35,7 +35,9 @@ class TrafficLightExtractor:
         PILImage = loadPILImage(imagePath)
         width, height = PILImage.size
         numpyImage = PILImage2numpyImage(resizePILImage(PILImage, width=width / 4, height=height / 4))
-        trafficLightNumpyImages = self.trafficLightDetector.detectTrafficLightsWithinNumpyImage(numpyImage)
+        trafficLightDescriptions = self.trafficLightDetector.detectTrafficLightsWithinNumpyImage(numpyImage)
+        trafficLightNumpyImages = map(lambda trafficLightDescription: trafficLightDescription.trafficLightNumpyImage,
+                                      trafficLightDescriptions)
         self.saveTrafficLights(imagePath, trafficLightNumpyImages, dst)
 
     def saveTrafficLights(self, filename, trafficLightNumpyImages, dst):

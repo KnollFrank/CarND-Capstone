@@ -2,6 +2,7 @@ from distutils.version import StrictVersion
 
 import numpy as np
 import tensorflow as tf
+from TrafficLightDescription import TrafficLightDescription
 
 
 # adapted from https://github.com/tensorflow/models/blob/master/research/object_detection/object_detection_tutorial.ipynb
@@ -29,7 +30,8 @@ class TrafficLightDetector:
         output_dict = self.run_inference_for_single_image(numpyImage)
         box_class_pairs = zip(output_dict['detection_boxes'], output_dict['detection_classes'])
         box_trafficLightClass_pairs = filter(lambda (_, clazz): self.isTrafficLight(clazz), box_class_pairs)
-        trafficLightNumpyImages = map(lambda (box, _): self.crop(numpyImage, box), box_trafficLightClass_pairs)
+        trafficLightNumpyImages = map(lambda (box, _): TrafficLightDescription(self.crop(numpyImage, box)),
+                                      box_trafficLightClass_pairs)
         return trafficLightNumpyImages
 
     def isTrafficLight(self, clazz):

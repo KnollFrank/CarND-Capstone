@@ -5,10 +5,11 @@ class TrafficLightClassifier:
         self.trafficLightColorClassifier = trafficLightColorClassifier
 
     def classifyTrafficLights(self, numpyImage):
-        trafficLightNumpyImages = self.trafficLightDetector.detectTrafficLightsWithinNumpyImage(numpyImage)
-        return self.detectTrafficLightColors(trafficLightNumpyImages)
+        trafficLightDescriptions = self.trafficLightDetector.detectTrafficLightsWithinNumpyImage(numpyImage)
+        return self.detectTrafficLightColors(trafficLightDescriptions)
 
-    def detectTrafficLightColors(self, trafficLightNumpyImages):
-        return [self.trafficLightColorClassifier.detectTrafficLightColor(trafficLightNumpyImage) for
-                trafficLightNumpyImage in
-                trafficLightNumpyImages]
+    def detectTrafficLightColors(self, trafficLightDescriptions):
+        return map(self.detectTrafficLightColor, trafficLightDescriptions)
+
+    def detectTrafficLightColor(self, trafficLightDescription):
+        return self.trafficLightColorClassifier.detectTrafficLightColor(trafficLightDescription.trafficLightNumpyImage)
