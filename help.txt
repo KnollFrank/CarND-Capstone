@@ -32,4 +32,13 @@ frankknoll@frankknoll-XPS-13-9370:~/udacity/SDCND/CarND-Capstone$ conda env upda
 TODO:
 - die Erkennung der Ampeln via TrafficLightDetector.detectTrafficLightsWithinNumpyImage() mit rfcn_resnet101_coco_2018_01_28 ist präzise, aber langsam.
 - ssd_mobilenet_v1_coco_11_06_2017
+- beachte https://classroom.udacity.com/nanodegrees/nd013/parts/30260907-68c1-4f24-b793-89c0c2a0ad32/modules/702b3c5a-b896-4cca-8a64-dfe0daf09449/lessons/e43b2e6d-6def-4d3a-b332-7a58b847bfa4/concepts/d7a280ee-cd72-41d2-ab6d-9dae26dd42d4:
+
+    If you are having trouble with latency when turning on camera images in the simulator, try classifying only every third or fourth camera image.
+
+    If you are uploading your own previous work, be sure to make all Python files executable. In Ubuntu, this can be done from the command line with the chmod command. The following command should add executable permissions to all Python files in the specified directory:
+
+    find /home/workspace/your/directory -type f -iname "*.py" -exec chmod +x {} \;
+    Additionally, if you are uploading your own previous work, you will need to add the folder found in /home/workspace/CarND-Capstone/ros/src/dbw_mkz_msgs to your project.
+
 
