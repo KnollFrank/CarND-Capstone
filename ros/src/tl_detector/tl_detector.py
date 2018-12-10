@@ -9,6 +9,7 @@ from cv_bridge import CvBridge
 from light_classification.TrafficLightClassifier import TrafficLightClassifier
 from light_classification.TrafficLightColorClassifier import TrafficLightColorClassifier
 from light_classification.TrafficLightColorClassifierFactory import IMG_WIDTH, IMG_HEIGHT, TRAFFIC_LIGHT_COLOR_CLASSIFIER_FILE
+from light_classification.TrafficLightExtractor import TRAFFIC_LIGHT_DETECTOR_NAME
 from light_classification.TrafficLightColor import TrafficLightColor
 from light_classification.TrafficLightDetector import TrafficLightDetector
 import tf
