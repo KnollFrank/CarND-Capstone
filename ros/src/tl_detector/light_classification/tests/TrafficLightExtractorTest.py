@@ -1,5 +1,5 @@
-import os
 import glob
+import os
 import shutil
 import tempfile
 from unittest import TestCase
@@ -10,6 +10,7 @@ from TrafficLightExtractor import TrafficLightExtractor
 
 def get_script_path():
     return os.path.dirname(os.path.realpath(__file__))
+
 
 class TrafficLightExtractorTest(TestCase):
 
@@ -23,7 +24,8 @@ class TrafficLightExtractorTest(TestCase):
         # GIVEN
         trafficLightExtractor = TrafficLightExtractor(
             TrafficLightDetector(
-                get_script_path() + '/../data/rfcn_resnet101_coco_2018_01_28/frozen_inference_graph.pb'))
+                get_script_path() + '/../data/rfcn_resnet101_coco_2018_01_28/frozen_inference_graph.pb'),
+            minScore=0.5)
 
         # WHEN
         trafficLightExtractor.extractAndSaveTrafficLights(srcDir=get_script_path() + '/images', dstDir=self.test_dir)

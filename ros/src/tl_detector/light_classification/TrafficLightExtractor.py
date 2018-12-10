@@ -2,13 +2,14 @@ import glob
 import os
 
 from TrafficLightDetector import TrafficLightDetector
-from utilities import mkdir, numpyImage2PILImage, loadNumpyImage, PILImage2numpyImage, resizePILImage, loadPILImage
+from utilities import mkdir, numpyImage2PILImage, PILImage2numpyImage, resizePILImage, loadPILImage
 
 
 class TrafficLightExtractor:
 
-    def __init__(self, trafficLightDetector):
+    def __init__(self, trafficLightDetector, minScore):
         self.trafficLightDetector = trafficLightDetector
+        self.minScore = minScore
 
     # @profile
     def extractAndSaveTrafficLights(self, srcDir, dstDir):
@@ -35,8 +36,13 @@ class TrafficLightExtractor:
         PILImage = loadPILImage(imagePath)
         width, height = PILImage.size
         numpyImage = PILImage2numpyImage(resizePILImage(PILImage, width=width / 4, height=height / 4))
-        trafficLightDescriptions = self.trafficLightDetector.detectTrafficLightsWithinNumpyImage(numpyImage)
+        trafficLightDescriptions = self.filterByMinScore(
+            self.trafficLightDetector.detectTrafficLightsWithinNumpyImage(numpyImage))
         self.saveTrafficLights(imagePath, trafficLightDescriptions, dst)
+
+    def filterByMinScore(self, trafficLightDescriptions):
+        return filter(lambda trafficLightDescription: trafficLightDescription.score >= self.minScore,
+                      trafficLightDescriptions)
 
     def saveTrafficLights(self, filename, trafficLightDescriptions, dst):
         for i, trafficLightDescription in enumerate(trafficLightDescriptions):
