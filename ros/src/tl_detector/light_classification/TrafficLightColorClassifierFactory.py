@@ -10,6 +10,7 @@ from utilities import mkdir
 
 IMG_WIDTH = 50
 IMG_HEIGHT = 120
+TRAFFIC_LIGHT_COLOR_CLASSIFIER_FILE = 'trafficLightColorClassifier.h5'
 
 class TrafficLightColorClassifierFactory:
 
@@ -126,5 +127,5 @@ if __name__ == '__main__':
                                                            img_height=IMG_HEIGHT,
                                                            img_width=IMG_WIDTH,
                                                            epochs=50,
-                                                           modelFile='model.h5')
+                                                           modelFile=TRAFFIC_LIGHT_COLOR_CLASSIFIER_FILE)
     classifierFactory.createAndSaveClassifier()
