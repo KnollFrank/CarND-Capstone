@@ -11,12 +11,13 @@ from keras.utils import np_utils
 img_height, img_width = 120, 50
 
 train_data_dir = 'data/trafficlight_images'
-modelFile = 'model.h5'
-
 
 class TrafficLightColorClassifierFactory:
 
-    def __init__(self):
+    def __init__(self, epochs, modelFile):
+        self.epochs = epochs
+        self.modelFile = modelFile
+
         self.x_train_file = 'x_train.npy'
         self.y_train_file = 'y_train.npy'
         self.x_validation_file = 'x_validation.npy'
@@ -26,7 +27,6 @@ class TrafficLightColorClassifierFactory:
 
         self.batch_size = 16
         self.num_classes = 3
-        self.epochs = 50
 
     def createAndSaveClassifier(self):
         self.save_bottleneck_features()
@@ -117,5 +117,5 @@ class TrafficLightColorClassifierFactory:
 
 
 if __name__ == '__main__':
-    classifierFactory = TrafficLightColorClassifierFactory()
+    classifierFactory = TrafficLightColorClassifierFactory(epochs=50, modelFile='model.h5')
     classifierFactory.createAndSaveClassifier()
