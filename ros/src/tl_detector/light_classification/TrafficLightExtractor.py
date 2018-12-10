@@ -64,6 +64,7 @@ class TrafficLightExtractor:
 if __name__ == '__main__':
     trafficLightExtractor = TrafficLightExtractor(
         TrafficLightDetector(
-            'data/ssd_mobilenet_v1_0.75_depth_300x300_coco14_sync_2018_07_03/frozen_inference_graph.pb'))
+            'data/ssd_mobilenet_v1_0.75_depth_300x300_coco14_sync_2018_07_03/frozen_inference_graph.pb'),
+        minScore=0.5)
     trafficLightExtractor.extractAndSaveTrafficLights(srcDir='data/simulator_images',
                                                       dstDir='data/trafficlight_small_images')
