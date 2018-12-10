@@ -8,7 +8,7 @@ from sensor_msgs.msg import Image
 from cv_bridge import CvBridge
 from light_classification.TrafficLightClassifier import TrafficLightClassifier
 from light_classification.TrafficLightColorClassifier import TrafficLightColorClassifier
-from light_classification.TrafficLightColorClassifierFactory import IMG_WIDTH, IMG_HEIGHT
+from light_classification.TrafficLightColorClassifierFactory import IMG_WIDTH, IMG_HEIGHT, TRAFFIC_LIGHT_COLOR_CLASSIFIER_FILE
 from light_classification.TrafficLightColor import TrafficLightColor
 from light_classification.TrafficLightDetector import TrafficLightDetector
 import tf
@@ -56,7 +56,7 @@ class TLDetector(object):
         self.bridge = CvBridge()
         self.light_classifier = TrafficLightClassifier(
             TrafficLightDetector('light_classification/data/rfcn_resnet101_coco_2018_01_28/frozen_inference_graph.pb'),
-            TrafficLightColorClassifier('light_classification/model.h5', img_height=IMG_HEIGHT, img_width=IMG_WIDTH))
+            TrafficLightColorClassifier('light_classification/' + TRAFFIC_LIGHT_COLOR_CLASSIFIER_FILE, img_height=IMG_HEIGHT, img_width=IMG_WIDTH))
         self.listener = tf.TransformListener()
 
         rospy.spin()
