@@ -13,9 +13,6 @@ img_height, img_width = 120, 50
 train_data_dir = 'data/trafficlight_images'
 modelFile = 'model.h5'
 
-num_classes = 3
-epochs = 50
-
 
 class TrafficLightColorClassifierFactory:
 
@@ -28,7 +25,8 @@ class TrafficLightColorClassifierFactory:
         self.top_model_weights_file = 'top_model_weights.h5'
 
         self.batch_size = 16
-
+        self.num_classes = 3
+        self.epochs = 50
 
     def createAndSaveClassifier(self):
         self.save_bottleneck_features()
@@ -44,7 +42,7 @@ class TrafficLightColorClassifierFactory:
         model.add(Flatten(input_shape=input_shape))
         model.add(Dense(256, activation='relu'))
         model.add(Dropout(0.5))
-        model.add(Dense(num_classes, activation='sigmoid'))
+        model.add(Dense(self.num_classes, activation='sigmoid'))
         return model
 
     # see https://gist.github.com/fchollet/f35fbc80e066a49d65f1688a7e99f069
@@ -82,17 +80,17 @@ class TrafficLightColorClassifierFactory:
     def train_and_save_top_model(self):
         x_train = np.load(open(self.x_train_file, 'rb'))
         y_train = np.load(open(self.y_train_file, 'rb'))
-        y_train = np_utils.to_categorical(y_train, num_classes)
+        y_train = np_utils.to_categorical(y_train, self.num_classes)
 
         x_validation = np.load(open(self.x_validation_file, 'rb'))
         y_validation = np.load(open(self.y_validation_file, 'rb'))
-        y_validation = np_utils.to_categorical(y_validation, num_classes)
+        y_validation = np_utils.to_categorical(y_validation, self.num_classes)
 
         model = self.create_top_model(x_train.shape[1:])
         model.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['accuracy'])
         model.fit(x_train,
                   y_train,
-                  epochs=epochs,
+                  epochs=self.epochs,
                   batch_size=self.batch_size,
                   validation_data=(x_validation, y_validation))
         # callbacks=[ModelCheckpoint(filepath=top_model_weights_path, verbose=1, save_best_only=True)])
