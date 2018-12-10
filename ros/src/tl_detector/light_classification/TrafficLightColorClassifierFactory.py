@@ -1,15 +1,16 @@
-from keras.preprocessing.image import ImageDataGenerator
-from keras import optimizers
-from keras import applications
 # from squeezenet import SqueezeNet
 import numpy as np
-from keras.models import Sequential
+from keras import applications
+from keras import optimizers
 from keras.layers import Dropout, Flatten, Dense
+from keras.models import Sequential
+from keras.preprocessing.image import ImageDataGenerator
 from keras.utils import np_utils
+
 from utilities import mkdir
 
-IMG_WIDTH = 50
-IMG_HEIGHT = 120
+IMG_WIDTH = int(20 * 32 / 20)
+IMG_HEIGHT = int(50 * 32 / 20)
 TRAFFIC_LIGHT_COLOR_CLASSIFIER_FILE = 'trafficLightColorClassifier.h5'
 
 class TrafficLightColorClassifierFactory:
@@ -123,7 +124,7 @@ class TrafficLightColorClassifierFactory:
 
 
 if __name__ == '__main__':
-    classifierFactory = TrafficLightColorClassifierFactory(train_data_dir='data/trafficlight_images',
+    classifierFactory = TrafficLightColorClassifierFactory(train_data_dir='data/trafficlight_small_images',
                                                            img_height=IMG_HEIGHT,
                                                            img_width=IMG_WIDTH,
                                                            epochs=50,
