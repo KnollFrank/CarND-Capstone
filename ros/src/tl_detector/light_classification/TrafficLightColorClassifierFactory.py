@@ -17,6 +17,12 @@ class TrafficLightColorClassifierFactory:
         self.epochs = epochs
         self.modelFile = modelFile
 
+        self.createTmpFileNames()
+
+        self.batch_size = 16
+        self.num_classes = 3
+
+    def createTmpFileNames(self):
         directory = 'data/TrafficLightColorClassifier'
         mkdir(directory)
         self.x_train_file = directory + '/x_train.npy'
@@ -24,9 +30,6 @@ class TrafficLightColorClassifierFactory:
         self.x_validation_file = directory + '/x_validation.npy'
         self.y_validation_file = directory + '/y_validation.npy'
         self.top_model_weights_file = directory + '/top_model_weights.h5'
-
-        self.batch_size = 16
-        self.num_classes = 3
 
     def createAndSaveClassifier(self):
         self.save_bottleneck_features()
