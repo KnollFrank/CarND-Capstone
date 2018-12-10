@@ -115,7 +115,7 @@ class TrafficLightColorClassifierFactory:
         model.compile(loss='categorical_crossentropy',
                       optimizer=optimizers.SGD(lr=1e-4, momentum=0.9),
                       metrics=['accuracy'])
-        model.save(modelFile)
+        model.save(self.modelFile)
 
 
 if __name__ == '__main__':
