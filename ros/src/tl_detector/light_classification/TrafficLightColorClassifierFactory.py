@@ -6,9 +6,7 @@ import numpy as np
 from keras.models import Sequential
 from keras.layers import Dropout, Flatten, Dense
 from keras.utils import np_utils
-
-
-# dimensions of our images.
+from utilities import mkdir
 
 class TrafficLightColorClassifierFactory:
 
@@ -19,12 +17,13 @@ class TrafficLightColorClassifierFactory:
         self.epochs = epochs
         self.modelFile = modelFile
 
-        self.x_train_file = 'x_train.npy'
-        self.y_train_file = 'y_train.npy'
-        self.x_validation_file = 'x_validation.npy'
-        self.y_validation_file = 'y_validation.npy'
-
-        self.top_model_weights_file = 'top_model_weights.h5'
+        directory = 'data/TrafficLightColorClassifier'
+        mkdir(directory)
+        self.x_train_file = directory + '/x_train.npy'
+        self.y_train_file = directory + '/y_train.npy'
+        self.x_validation_file = directory + '/x_validation.npy'
+        self.y_validation_file = directory + '/y_validation.npy'
+        self.top_model_weights_file = directory + '/top_model_weights.h5'
 
         self.batch_size = 16
         self.num_classes = 3
