@@ -55,8 +55,9 @@ class TLDetector(object):
 
         self.bridge = CvBridge()
         self.light_classifier = TrafficLightClassifier(
-            TrafficLightDetector('light_classification/data/rfcn_resnet101_coco_2018_01_28/frozen_inference_graph.pb'),
-            TrafficLightColorClassifier('light_classification/' + TRAFFIC_LIGHT_COLOR_CLASSIFIER_FILE, img_height=IMG_HEIGHT, img_width=IMG_WIDTH))
+            TrafficLightDetector('light_classification/data/' + TRAFFIC_LIGHT_DETECTOR_NAME + '/frozen_inference_graph.pb'),
+            TrafficLightColorClassifier('light_classification/' + TRAFFIC_LIGHT_COLOR_CLASSIFIER_FILE, img_height=IMG_HEIGHT, img_width=IMG_WIDTH),
+            minScore=0.5)
         self.listener = tf.TransformListener()
 
         rospy.spin()
