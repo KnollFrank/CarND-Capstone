@@ -21,13 +21,17 @@ batch_size = 16
 class TrafficLightColorClassifierFactory:
 
     def __init__(self):
-        pass
+        self.x_train_file = 'x_train.npy'
+        self.y_train_file = 'y_train.npy'
+        self.x_validation_file = 'x_validation.npy'
+        self.y_validation_file = 'y_validation.npy'
+
+        self.top_model_weights_file = 'top_model_weights.h5'
 
     def createAndSaveClassifier(self):
-        x_train_file, y_train_file, x_validation_file, y_validation_file = self.save_bottleneck_features()
-        top_model_weights_file = self.train_and_save_top_model(x_train_file, y_train_file, x_validation_file,
-                                                               y_validation_file)
-        self.create_and_save_initialized_top_model_on_top_of_base_model(top_model_weights_file)
+        self.save_bottleneck_features()
+        self.train_and_save_top_model()
+        self.create_and_save_initialized_top_model_on_top_of_base_model()
 
     def create_base_model(self):
         return applications.VGG16(weights='imagenet', include_top=False, input_shape=(img_height, img_width, 3))
@@ -67,27 +71,19 @@ class TrafficLightColorClassifierFactory:
             y_bottleneck = generator.classes
             np.save(open(y_file, 'wb'), y_bottleneck)
 
-        x_train_file = 'x_train.npy'
-        y_train_file = 'y_train.npy'
-
-        x_validation_file = 'x_validation.npy'
-        y_validation_file = 'y_validation.npy'
-
         print('test data:')
-        save_bottleneck_features('training', x_train_file, y_train_file)
+        save_bottleneck_features('training', self.x_train_file, self.y_train_file)
 
         print('validation data:')
-        save_bottleneck_features('validation', x_validation_file, y_validation_file)
+        save_bottleneck_features('validation', self.x_validation_file, self.y_validation_file)
 
-        return x_train_file, y_train_file, x_validation_file, y_validation_file
-
-    def train_and_save_top_model(self, x_train_file, y_train_file, x_validation_file, y_validation_file):
-        x_train = np.load(open(x_train_file, 'rb'))
-        y_train = np.load(open(y_train_file, 'rb'))
+    def train_and_save_top_model(self):
+        x_train = np.load(open(self.x_train_file, 'rb'))
+        y_train = np.load(open(self.y_train_file, 'rb'))
         y_train = np_utils.to_categorical(y_train, num_classes)
 
-        x_validation = np.load(open(x_validation_file, 'rb'))
-        y_validation = np.load(open(y_validation_file, 'rb'))
+        x_validation = np.load(open(self.x_validation_file, 'rb'))
+        y_validation = np.load(open(self.y_validation_file, 'rb'))
         y_validation = np_utils.to_categorical(y_validation, num_classes)
 
         model = self.create_top_model(x_train.shape[1:])
@@ -98,15 +94,13 @@ class TrafficLightColorClassifierFactory:
                   batch_size=batch_size,
                   validation_data=(x_validation, y_validation))
         # callbacks=[ModelCheckpoint(filepath=top_model_weights_path, verbose=1, save_best_only=True)])
-        top_model_weights_file = 'top_model_weights.h5'
-        model.save_weights(top_model_weights_file)
-        return top_model_weights_file
+        model.save_weights(self.top_model_weights_file)
 
-    def create_initialized_top_model_on_top_of_base_model(self, top_model_weights_file):
+    def create_initialized_top_model_on_top_of_base_model(self):
         base_model = self.create_base_model()
 
         top_model = self.create_top_model(base_model.output_shape[1:])
-        top_model.load_weights(top_model_weights_file)
+        top_model.load_weights(self.top_model_weights_file)
 
         model = Sequential()
         model.add(base_model)
@@ -114,8 +108,8 @@ class TrafficLightColorClassifierFactory:
 
         return model
 
-    def create_and_save_initialized_top_model_on_top_of_base_model(self, top_model_weights_file):
-        model = self.create_initialized_top_model_on_top_of_base_model(top_model_weights_file)
+    def create_and_save_initialized_top_model_on_top_of_base_model(self):
+        model = self.create_initialized_top_model_on_top_of_base_model()
         model.compile(loss='categorical_crossentropy',
                       optimizer=optimizers.SGD(lr=1e-4, momentum=0.9),
                       metrics=['accuracy'])
