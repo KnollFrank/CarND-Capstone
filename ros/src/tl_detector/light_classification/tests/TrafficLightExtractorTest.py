@@ -5,7 +5,7 @@ import tempfile
 from unittest import TestCase
 
 from TrafficLightDetector import TrafficLightDetector
-from TrafficLightExtractor import TrafficLightExtractor
+from TrafficLightExtractor import TrafficLightExtractor, TRAFFIC_LIGHT_DETECTOR_NAME
 
 
 def get_script_path():
@@ -24,7 +24,7 @@ class TrafficLightExtractorTest(TestCase):
         # GIVEN
         trafficLightExtractor = TrafficLightExtractor(
             TrafficLightDetector(
-                get_script_path() + '/../data/rfcn_resnet101_coco_2018_01_28/frozen_inference_graph.pb'),
+                get_script_path() + '/../data/' + TRAFFIC_LIGHT_DETECTOR_NAME + '/frozen_inference_graph.pb'),
             minScore=0.5)
 
         # WHEN
@@ -39,7 +39,7 @@ class TrafficLightExtractorTest(TestCase):
 
         # check green
         self.assertEqual(self.getNumberOfFilesMatching(self.test_dir + '/green/img_0175_green_*.jpg'), 2)
-        self.assertEqual(self.getNumberOfFilesMatching(self.test_dir + '/green/img_0475_green_*.jpg'), 3)
+        self.assertEqual(self.getNumberOfFilesMatching(self.test_dir + '/green/img_0475_green_*.jpg'), 2)
 
     def getNumberOfFilesMatching(self, pattern):
         return len([file for file in glob.glob(pattern) if os.path.isfile(file)])

@@ -4,6 +4,8 @@ import os
 from TrafficLightDetector import TrafficLightDetector
 from utilities import mkdir, numpyImage2PILImage, PILImage2numpyImage, resizePILImage, loadPILImage
 
+TRAFFIC_LIGHT_DETECTOR_NAME = 'ssd_mobilenet_v1_0.75_depth_300x300_coco14_sync_2018_07_03'
+
 
 class TrafficLightExtractor:
 
@@ -63,8 +65,7 @@ class TrafficLightExtractor:
 
 if __name__ == '__main__':
     trafficLightExtractor = TrafficLightExtractor(
-        TrafficLightDetector(
-            'data/ssd_mobilenet_v1_0.75_depth_300x300_coco14_sync_2018_07_03/frozen_inference_graph.pb'),
+        TrafficLightDetector('data/' + TRAFFIC_LIGHT_DETECTOR_NAME + '/frozen_inference_graph.pb'),
         minScore=0.5)
     trafficLightExtractor.extractAndSaveTrafficLights(srcDir='data/simulator_images',
                                                       dstDir='data/trafficlight_small_images')
