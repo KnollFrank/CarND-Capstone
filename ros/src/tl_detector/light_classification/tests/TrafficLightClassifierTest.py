@@ -36,4 +36,6 @@ class TrafficLightClassifierTest(TestCase):
         trafficLightColorsActual = classifier.classifyTrafficLights(image)
 
         # Then
+        print(trafficLightColors)
+        print(trafficLightColorsActual)
         self.assertListEqual(trafficLightColors, trafficLightColorsActual)

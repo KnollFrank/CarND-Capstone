@@ -24,6 +24,7 @@ class TrafficLightDetector:
                 tf.import_graph_def(od_graph_def, name='')
         return detection_graph
 
+    # @profile
     def detectTrafficLightsWithinNumpyImage(self, numpyImage):
         output_dict = self.run_inference_for_single_image(numpyImage)
         box_class_pairs = zip(output_dict['detection_boxes'], output_dict['detection_classes'])
@@ -34,6 +35,7 @@ class TrafficLightDetector:
     def isTrafficLight(self, clazz):
         return clazz == 10
 
+    # @profile
     def crop(self, numpyImage, fractionBox):
         upper, left, lower, right = self.adaptFractionBox2Image(fractionBox, numpyImage)
         return numpyImage[upper:lower + 1, left:right + 1, :]
@@ -43,6 +45,7 @@ class TrafficLightDetector:
         absoluteBox = (upperFraction * height, leftFraction * width, lowerFraction * height, rightFraction * width)
         return map(int, absoluteBox)
 
+    # @profile
     def run_inference_for_single_image(self, numpyImage):
         with self.detection_graph.as_default():
             with tf.Session() as sess:

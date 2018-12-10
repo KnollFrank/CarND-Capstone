@@ -2,7 +2,7 @@ import glob
 import os
 
 from TrafficLightDetector import TrafficLightDetector
-from utilities import mkdir, numpyImage2PILImage, loadNumpyImage
+from utilities import mkdir, numpyImage2PILImage, loadNumpyImage, PILImage2numpyImage, resizePILImage, loadPILImage
 
 
 class TrafficLightExtractor:
@@ -10,6 +10,7 @@ class TrafficLightExtractor:
     def __init__(self, trafficLightDetector):
         self.trafficLightDetector = trafficLightDetector
 
+    # @profile
     def extractAndSaveTrafficLights(self, srcDir, dstDir):
         self.extractAndSaveTrafficLights4Color('red', srcDir, dstDir)
         self.extractAndSaveTrafficLights4Color('yellow', srcDir, dstDir)
@@ -31,7 +32,9 @@ class TrafficLightExtractor:
             self.detectAndSaveTrafficLightsWithinImage(imagePath, dst)
 
     def detectAndSaveTrafficLightsWithinImage(self, imagePath, dst):
-        numpyImage = loadNumpyImage(imagePath)
+        PILImage = loadPILImage(imagePath)
+        width, height = PILImage.size
+        numpyImage = PILImage2numpyImage(resizePILImage(PILImage, width=width / 4, height=height / 4))
         trafficLightNumpyImages = self.trafficLightDetector.detectTrafficLightsWithinNumpyImage(numpyImage)
         self.saveTrafficLights(imagePath, trafficLightNumpyImages, dst)
 
@@ -47,10 +50,13 @@ class TrafficLightExtractor:
         return root + '_' + str(i) + extension
 
     def saveTrafficLight(self, numpyImage, filename):
+        print 'saving: ' + filename
         numpyImage2PILImage(numpyImage).save(filename)
 
 
 if __name__ == '__main__':
     trafficLightExtractor = TrafficLightExtractor(
-        TrafficLightDetector('data/rfcn_resnet101_coco_2018_01_28/frozen_inference_graph.pb'))
-    trafficLightExtractor.extractAndSaveTrafficLights(srcDir='data/simulator_images', dstDir='data/trafficlight_images')
+        TrafficLightDetector(
+            'data/ssd_mobilenet_v1_0.75_depth_300x300_coco14_sync_2018_07_03/frozen_inference_graph.pb'))
+    trafficLightExtractor.extractAndSaveTrafficLights(srcDir='data/simulator_images',
+                                                      dstDir='data/trafficlight_small_images')

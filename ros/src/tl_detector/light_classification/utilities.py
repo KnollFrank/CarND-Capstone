@@ -23,5 +23,16 @@ def numpyImage2PILImage(numpyImage):
 
 
 def loadNumpyImage(imagePath):
-    PILImage = Image.open(imagePath)
-    return PILImage2numpyImage(PILImage)
+    return PILImage2numpyImage(loadPILImage(imagePath))
+
+
+def loadPILImage(imagePath):
+    return Image.open(imagePath)
+
+
+def resizeNumpyImageAsPILImage(numpyImage, width, height):
+    return resizePILImage(numpyImage2PILImage(numpyImage), width=width, height=height)
+
+
+def resizePILImage(PILImage, width, height):
+    return PILImage.resize((width, height), Image.ANTIALIAS)

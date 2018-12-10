@@ -30,5 +30,6 @@ Tensorflow Object Detection API Workflow:
 frankknoll@frankknoll-XPS-13-9370:~/udacity/SDCND/CarND-Capstone$ conda env update carnd -f requirements.txt
 
 TODO:
+- die Erkennung der Ampeln via TrafficLightDetector.detectTrafficLightsWithinNumpyImage() mit rfcn_resnet101_coco_2018_01_28 ist präzise, aber langsam.
 - ssd_mobilenet_v1_coco_11_06_2017
 

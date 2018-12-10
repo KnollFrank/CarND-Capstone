@@ -1,11 +1,10 @@
 import numpy as np
 import tensorflow as tf
-from PIL import Image
 from keras.models import load_model
 from keras.preprocessing import image
 
 from TrafficLightColor import TrafficLightColor
-from utilities import numpyImage2PILImage
+from utilities import resizeNumpyImageAsPILImage
 
 
 class TrafficLightColorClassifier:
@@ -18,13 +17,11 @@ class TrafficLightColorClassifier:
         self.graph = tf.get_default_graph()
 
     def detectTrafficLightColor(self, numpyImage):
-        PILImage = self.resize(numpyImage, width=self.img_width, height=self.img_height)
+        PILImage = resizeNumpyImageAsPILImage(numpyImage, width=self.img_width, height=self.img_height)
         with self.graph.as_default():
             predictions = self.model.predict(self.asCNNInput(PILImage))
         return self.getMostLikelyTrafficLightColor(predictions)
 
-    def resize(self, numpyImage, width, height):
-        return numpyImage2PILImage(numpyImage).resize((width, height), Image.ANTIALIAS)
 
     def asCNNInput(self, PILImage):
         return np.expand_dims(image.img_to_array(PILImage), axis=0)
