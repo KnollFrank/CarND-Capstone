@@ -15,7 +15,6 @@ modelFile = 'model.h5'
 
 num_classes = 3
 epochs = 50
-batch_size = 16
 
 
 class TrafficLightColorClassifierFactory:
@@ -27,6 +26,9 @@ class TrafficLightColorClassifierFactory:
         self.y_validation_file = 'y_validation.npy'
 
         self.top_model_weights_file = 'top_model_weights.h5'
+
+        self.batch_size = 16
+
 
     def createAndSaveClassifier(self):
         self.save_bottleneck_features()
@@ -91,7 +93,7 @@ class TrafficLightColorClassifierFactory:
         model.fit(x_train,
                   y_train,
                   epochs=epochs,
-                  batch_size=batch_size,
+                  batch_size=self.batch_size,
                   validation_data=(x_validation, y_validation))
         # callbacks=[ModelCheckpoint(filepath=top_model_weights_path, verbose=1, save_best_only=True)])
         model.save_weights(self.top_model_weights_file)
