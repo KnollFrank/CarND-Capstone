@@ -1,5 +1,5 @@
 import os
-import os.path
+import glob
 import shutil
 import tempfile
 from unittest import TestCase
@@ -30,20 +30,17 @@ class TrafficLightExtractorTest(TestCase):
 
         # THEN
         # check red
-        self.assertTrue(os.path.isfile(os.path.join(self.test_dir + '/red', 'img_0001_red_1.jpg')))
-        self.assertTrue(os.path.isfile(os.path.join(self.test_dir + '/red', 'img_0001_red_2.jpg')))
-        self.assertTrue(os.path.isfile(os.path.join(self.test_dir + '/red', 'img_0001_red_3.jpg')))
+        self.assertEqual(self.getNumberOfFilesMatching(self.test_dir + '/red/img_0001_red_*.jpg'), 3)
 
         # check yellow
         self.assertEqual(self.getNumberOfFilesContainedIn(self.test_dir + '/yellow'), 0)
 
         # check green
-        self.assertTrue(os.path.isfile(os.path.join(self.test_dir + '/green', 'img_0175_green_1.jpg')))
-        self.assertTrue(os.path.isfile(os.path.join(self.test_dir + '/green', 'img_0175_green_2.jpg')))
+        self.assertEqual(self.getNumberOfFilesMatching(self.test_dir + '/green/img_0175_green_*.jpg'), 2)
+        self.assertEqual(self.getNumberOfFilesMatching(self.test_dir + '/green/img_0475_green_*.jpg'), 3)
 
-        self.assertTrue(os.path.isfile(os.path.join(self.test_dir + '/green', 'img_0475_green_1.jpg')))
-        self.assertTrue(os.path.isfile(os.path.join(self.test_dir + '/green', 'img_0475_green_2.jpg')))
-        self.assertTrue(os.path.isfile(os.path.join(self.test_dir + '/green', 'img_0475_green_3.jpg')))
+    def getNumberOfFilesMatching(self, pattern):
+        return len([file for file in glob.glob(pattern) if os.path.isfile(file)])
 
     def getNumberOfFilesContainedIn(self, directory):
         return len(self.getFilesContainedIn(directory))

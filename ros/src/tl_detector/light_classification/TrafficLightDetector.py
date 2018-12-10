@@ -28,10 +28,13 @@ class TrafficLightDetector:
     # @profile
     def detectTrafficLightsWithinNumpyImage(self, numpyImage):
         output_dict = self.run_inference_for_single_image(numpyImage)
-        box_class_pairs = zip(output_dict['detection_boxes'], output_dict['detection_classes'])
-        box_trafficLightClass_pairs = filter(lambda (_, clazz): self.isTrafficLight(clazz), box_class_pairs)
-        trafficLightNumpyImages = map(lambda (box, _): TrafficLightDescription(self.crop(numpyImage, box)),
-                                      box_trafficLightClass_pairs)
+        box_class_score_tuples = zip(output_dict['detection_boxes'], output_dict['detection_classes'],
+                                     output_dict['detection_scores'])
+        box_trafficLightClass_score_tuples = filter(lambda (_, clazz, __): self.isTrafficLight(clazz),
+                                                    box_class_score_tuples)
+        trafficLightNumpyImages = map(
+            lambda (box, _, score): TrafficLightDescription(self.crop(numpyImage, box), score),
+            box_trafficLightClass_score_tuples)
         return trafficLightNumpyImages
 
     def isTrafficLight(self, clazz):

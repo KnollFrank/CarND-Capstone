@@ -36,20 +36,19 @@ class TrafficLightExtractor:
         width, height = PILImage.size
         numpyImage = PILImage2numpyImage(resizePILImage(PILImage, width=width / 4, height=height / 4))
         trafficLightDescriptions = self.trafficLightDetector.detectTrafficLightsWithinNumpyImage(numpyImage)
-        trafficLightNumpyImages = map(lambda trafficLightDescription: trafficLightDescription.trafficLightNumpyImage,
-                                      trafficLightDescriptions)
-        self.saveTrafficLights(imagePath, trafficLightNumpyImages, dst)
+        self.saveTrafficLights(imagePath, trafficLightDescriptions, dst)
 
-    def saveTrafficLights(self, filename, trafficLightNumpyImages, dst):
-        for i, trafficLightNumpyImage in enumerate(trafficLightNumpyImages):
-            self.saveTrafficLight(trafficLightNumpyImage, self.createFileName(dst, filename, i + 1))
+    def saveTrafficLights(self, filename, trafficLightDescriptions, dst):
+        for i, trafficLightDescription in enumerate(trafficLightDescriptions):
+            self.saveTrafficLight(trafficLightDescription.trafficLightNumpyImage,
+                                  self.createFileName(dst, filename, i + 1, trafficLightDescription.score))
 
-    def createFileName(self, dst, filename, i):
-        return dst + '/' + self.getNumberedFileName(filename, i)
+    def createFileName(self, dst, filename, i, score):
+        return dst + '/' + self.getNumberedFileName(filename, i, score)
 
-    def getNumberedFileName(self, filename, i):
+    def getNumberedFileName(self, filename, i, score):
         root, extension = os.path.splitext(os.path.basename(filename))
-        return root + '_' + str(i) + extension
+        return root + '_' + str(i) + '_' + str(score) + extension
 
     def saveTrafficLight(self, numpyImage, filename):
         print 'saving: ' + filename
