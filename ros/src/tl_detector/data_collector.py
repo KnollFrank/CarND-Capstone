@@ -6,7 +6,6 @@ from styx_msgs.msg import TrafficLightArray, TrafficLight
 from styx_msgs.msg import Lane
 from sensor_msgs.msg import Image
 from cv_bridge import CvBridge
-from light_classification.tl_classifier import TLClassifier
 import tf
 import cv2
 import yaml
@@ -27,6 +26,7 @@ def trafficLightStateAsString(state):
     return strByTrafficLight[state]
 
 class DataCollector(object):
+
     def __init__(self):
         rospy.init_node('collect_data')
 
@@ -54,7 +54,6 @@ class DataCollector(object):
         mkdir(self.image_dir + "/green")
         mkdir(self.image_dir + "/yellow")
         mkdir(self.image_dir + "/unknown")
-        mkdir(self.image_dir + "/no_traffic_light")
 
         sub1 = rospy.Subscriber('/current_pose', PoseStamped, self.pose_cb)
         sub2 = rospy.Subscriber('/base_waypoints', Lane, self.waypoints_cb)
@@ -68,7 +67,6 @@ class DataCollector(object):
         self.upcoming_red_light_pub = rospy.Publisher('/traffic_waypoint', Int32, queue_size=1)
 
         self.bridge = CvBridge()
-        self.light_classifier = TLClassifier()
         self.listener = tf.TransformListener()
 
         rospy.spin()
@@ -132,8 +130,6 @@ class DataCollector(object):
             # rospy.loginfo("state: %d", closest_light.state)
             if dist <= 50:
                 self.saveCameraImage(trafficLightStateAsString(closest_light.state))
-            elif 200 <= dist:
-                self.saveCameraImage("no_traffic_light")
 
     # TODO: DRY with WaypointUpdater.distance()
     def distance(self, waypoints, wp1, wp2):
