@@ -3,7 +3,7 @@ import os
 
 from TrafficLightDetector import TrafficLightDetector
 from TrafficLightHavingMinScoreDetector import TrafficLightHavingMinScoreDetector
-from utilities import mkdir, numpyImage2PILImage, PILImage2numpyImage, resizePILImage, loadPILImage
+from utilities import mkdir, numpyImage2PILImage, loadNumpyImage
 
 TRAFFIC_LIGHT_DETECTOR_NAME = 'ssd_mobilenet_v1_0.75_depth_300x300_coco14_sync_2018_07_03'
 
@@ -35,9 +35,7 @@ class TrafficLightExtractor:
             self.detectAndSaveTrafficLightsWithinImage(imagePath, dst)
 
     def detectAndSaveTrafficLightsWithinImage(self, imagePath, dst):
-        PILImage = loadPILImage(imagePath)
-        width, height = PILImage.size
-        numpyImage = PILImage2numpyImage(resizePILImage(PILImage, width=width, height=height))
+        numpyImage = loadNumpyImage(imagePath)
         trafficLightDescriptions = self.trafficLightDetector.detectTrafficLightsWithinNumpyImage(numpyImage)
         self.saveTrafficLights(imagePath, trafficLightDescriptions, dst)
 
