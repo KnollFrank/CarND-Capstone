@@ -17,6 +17,7 @@ import tf
 import cv2
 import yaml
 from scipy.spatial import KDTree
+from data_collector import trafficLightStateAsString
 
 STATE_COUNT_THRESHOLD = 3
 
@@ -140,21 +141,19 @@ class TLDetector(object):
         cv_image = self.bridge.imgmsg_to_cv2(self.camera_image, "bgr8")
 
         trafficLightColors = self.light_classifier.classifyTrafficLights(cv_image)
-        trafficLight = TrafficLight.UNKNOWN
-        if (len(trafficLightColors) > 0):
-            trafficLight = self.asTrafficLight(trafficLightColors[0])
-
-        rospy.loginfo("label: %s", trafficLight)
+        trafficLight = self.asTrafficLight(trafficLightColors[0]) if len(trafficLightColors) > 0 else TrafficLight.UNKNOWN
+        rospy.loginfo("label: %s", trafficLightStateAsString(trafficLight))
         return trafficLight
 
 
     def asTrafficLight(self, trafficLightColor):
-        if trafficLightColor == TrafficLightColor.RED:
-            return TrafficLight.RED
-        if trafficLightColor == TrafficLightColor.YELLOW:
-            return TrafficLight.YELLOW
-        if trafficLightColor == TrafficLightColor.GREEN:
-            return TrafficLight.GREEN
+        trafficLightByTrafficLightColor = {
+            TrafficLightColor.RED: TrafficLight.RED,
+            TrafficLightColor.YELLOW: TrafficLight.YELLOW,
+            TrafficLightColor.GREEN:  TrafficLight.GREEN
+        }
+        return trafficLightByTrafficLightColor[trafficLightColor]
+
 
     def process_traffic_lights(self):
         """Finds closest visible traffic light, if one exists, and determines its

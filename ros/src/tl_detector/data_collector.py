@@ -17,6 +17,15 @@ from light_classification.utilities import mkdir
 
 STATE_COUNT_THRESHOLD = 3
 
+def trafficLightStateAsString(state):
+    strByTrafficLight = {
+        TrafficLight.RED: "red",
+        TrafficLight.YELLOW: "yellow",
+        TrafficLight.GREEN: "green",
+        TrafficLight.UNKNOWN: "unknown"
+    }
+    return strByTrafficLight[state]
+
 class DataCollector(object):
     def __init__(self):
         rospy.init_node('collect_data')
@@ -110,17 +119,6 @@ class DataCollector(object):
 
         return closest_light, car_wp_idx, line_wp_idx
 
-    # TODO: refactor, introduce enum for TrafficLight.state
-    def asString(self, state):
-        if state == TrafficLight.RED:
-            return "red"
-        if state == TrafficLight.YELLOW:
-            return "yellow"
-        if state == TrafficLight.GREEN:
-            return "green"
-        if state == TrafficLight.UNKNOWN:
-            return "unknown"
-
     def saveCameraImage(self, fileNameSuffix):
         self.img_counter += 1
         fileName = "{0}/{2}/img_{1:04d}_{2}.jpg".format(self.image_dir, self.img_counter, fileNameSuffix)
@@ -133,7 +131,7 @@ class DataCollector(object):
             rospy.loginfo("dist(car, light): %d", dist)
             # rospy.loginfo("state: %d", closest_light.state)
             if dist <= 50:
-                self.saveCameraImage(self.asString(closest_light.state))
+                self.saveCameraImage(trafficLightStateAsString(closest_light.state))
             elif 200 <= dist:
                 self.saveCameraImage("no_traffic_light")
 
