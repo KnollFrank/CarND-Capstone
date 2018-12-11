@@ -141,9 +141,9 @@ class TLDetector(object):
             self.prev_light_loc = None
             return False
 
-        self.count = (self.count + 1) % 20
+        self.count = (self.count + 1) % 60
         if self.count != 0 and self.prevTrafficLight is not None:
-            rospy.loginfo("previous label: %s", self.trafficLightStateAsString(self.prevTrafficLight))
+            rospy.loginfo("previous traffic light color: %s", trafficLightStateAsString(self.prevTrafficLight))
             return self.prevTrafficLight
 
         cv_image = self.bridge.imgmsg_to_cv2(self.camera_image, "bgr8")
@@ -151,7 +151,7 @@ class TLDetector(object):
         trafficLightColors = self.light_classifier.classifyTrafficLights(cv_image)
         trafficLight = self.asTrafficLight(trafficLightColors[0]) if len(trafficLightColors) > 0 else TrafficLight.UNKNOWN
         self.prevTrafficLight = trafficLight
-        rospy.loginfo("label: %s", trafficLightStateAsString(trafficLight))
+        rospy.loginfo("traffic light color: %s", trafficLightStateAsString(trafficLight))
         return trafficLight
 
 
