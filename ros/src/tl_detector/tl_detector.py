@@ -12,6 +12,7 @@ from light_classification.TrafficLightColorClassifierFactory import IMG_WIDTH, I
 from light_classification.TrafficLightExtractor import TRAFFIC_LIGHT_DETECTOR_NAME
 from light_classification.TrafficLightColor import TrafficLightColor
 from light_classification.TrafficLightDetector import TrafficLightDetector
+from light_classification.TrafficLightHavingMinScoreDetector import TrafficLightHavingMinScoreDetector
 import tf
 import cv2
 import yaml
@@ -56,9 +57,9 @@ class TLDetector(object):
 
         self.bridge = CvBridge()
         self.light_classifier = TrafficLightClassifier(
-            TrafficLightDetector('light_classification/data/' + TRAFFIC_LIGHT_DETECTOR_NAME + '/frozen_inference_graph.pb'),
-            TrafficLightColorClassifier('light_classification/' + TRAFFIC_LIGHT_COLOR_CLASSIFIER_FILE, img_height=IMG_HEIGHT, img_width=IMG_WIDTH),
-            minScore=0.5)
+            TrafficLightHavingMinScoreDetector(
+                TrafficLightDetector('light_classification/data/' + TRAFFIC_LIGHT_DETECTOR_NAME + '/frozen_inference_graph.pb')),
+            TrafficLightColorClassifier('light_classification/' + TRAFFIC_LIGHT_COLOR_CLASSIFIER_FILE, img_height=IMG_HEIGHT, img_width=IMG_WIDTH))
         self.listener = tf.TransformListener()
 
         rospy.spin()
