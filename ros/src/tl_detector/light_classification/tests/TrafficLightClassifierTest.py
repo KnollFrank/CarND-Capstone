@@ -9,6 +9,7 @@ from TrafficLightColorClassifierFactory import IMG_WIDTH, IMG_HEIGHT, TRAFFIC_LI
 from TrafficLightDetector import TrafficLightDetector
 from TrafficLightExtractor import TRAFFIC_LIGHT_DETECTOR_NAME
 from TrafficLightExtractorTest import get_script_path
+from TrafficLightHavingMinScoreDetector import TrafficLightHavingMinScoreDetector
 from utilities import PILImage2numpyImage
 
 
@@ -27,11 +28,12 @@ class TrafficLightClassifierTest(TestCase):
         # Given
 
         classifier = TrafficLightClassifier(
-            TrafficLightDetector(
-                get_script_path() + '/../data/' + TRAFFIC_LIGHT_DETECTOR_NAME + '/frozen_inference_graph.pb'),
+            TrafficLightHavingMinScoreDetector(
+                TrafficLightDetector(
+                    get_script_path() + '/../data/' + TRAFFIC_LIGHT_DETECTOR_NAME + '/frozen_inference_graph.pb'),
+                minScore=0.5),
             TrafficLightColorClassifier(get_script_path() + '/../' + TRAFFIC_LIGHT_COLOR_CLASSIFIER_FILE,
-                                        img_height=IMG_HEIGHT, img_width=IMG_WIDTH),
-            minScore=0.5)
+                                        img_height=IMG_HEIGHT, img_width=IMG_WIDTH))
         image = PILImage2numpyImage(Image.open(imageFile))
 
         # When

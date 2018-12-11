@@ -2,6 +2,7 @@ import glob
 import os
 
 from TrafficLightDetector import TrafficLightDetector
+from TrafficLightHavingMinScoreDetector import TrafficLightHavingMinScoreDetector
 from utilities import mkdir, numpyImage2PILImage, PILImage2numpyImage, resizePILImage, loadPILImage
 
 TRAFFIC_LIGHT_DETECTOR_NAME = 'ssd_mobilenet_v1_0.75_depth_300x300_coco14_sync_2018_07_03'
@@ -9,9 +10,8 @@ TRAFFIC_LIGHT_DETECTOR_NAME = 'ssd_mobilenet_v1_0.75_depth_300x300_coco14_sync_2
 
 class TrafficLightExtractor:
 
-    def __init__(self, trafficLightDetector, minScore):
+    def __init__(self, trafficLightDetector):
         self.trafficLightDetector = trafficLightDetector
-        self.minScore = minScore
 
     # @profile
     def extractAndSaveTrafficLights(self, srcDir, dstDir):
@@ -38,13 +38,8 @@ class TrafficLightExtractor:
         PILImage = loadPILImage(imagePath)
         width, height = PILImage.size
         numpyImage = PILImage2numpyImage(resizePILImage(PILImage, width=width, height=height))
-        trafficLightDescriptions = self.filterByMinScore(
-            self.trafficLightDetector.detectTrafficLightsWithinNumpyImage(numpyImage))
+        trafficLightDescriptions = self.trafficLightDetector.detectTrafficLightsWithinNumpyImage(numpyImage)
         self.saveTrafficLights(imagePath, trafficLightDescriptions, dst)
-
-    def filterByMinScore(self, trafficLightDescriptions):
-        return filter(lambda trafficLightDescription: trafficLightDescription.score >= self.minScore,
-                      trafficLightDescriptions)
 
     def saveTrafficLights(self, filename, trafficLightDescriptions, dst):
         for i, trafficLightDescription in enumerate(trafficLightDescriptions):
@@ -65,7 +60,8 @@ class TrafficLightExtractor:
 
 if __name__ == '__main__':
     trafficLightExtractor = TrafficLightExtractor(
-        TrafficLightDetector('data/' + TRAFFIC_LIGHT_DETECTOR_NAME + '/frozen_inference_graph.pb'),
-        minScore=0.5)
+        TrafficLightHavingMinScoreDetector(
+            TrafficLightDetector('data/' + TRAFFIC_LIGHT_DETECTOR_NAME + '/frozen_inference_graph.pb'),
+            minScore=0.5))
     trafficLightExtractor.extractAndSaveTrafficLights(srcDir='data/simulator_images',
                                                       dstDir='data/trafficlight_small_images')

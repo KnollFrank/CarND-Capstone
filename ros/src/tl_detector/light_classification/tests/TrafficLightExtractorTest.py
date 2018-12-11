@@ -6,6 +6,7 @@ from unittest import TestCase
 
 from TrafficLightDetector import TrafficLightDetector
 from TrafficLightExtractor import TrafficLightExtractor, TRAFFIC_LIGHT_DETECTOR_NAME
+from TrafficLightHavingMinScoreDetector import TrafficLightHavingMinScoreDetector
 
 
 def get_script_path():
@@ -23,9 +24,10 @@ class TrafficLightExtractorTest(TestCase):
     def test_extract_traffic_lights(self):
         # GIVEN
         trafficLightExtractor = TrafficLightExtractor(
-            TrafficLightDetector(
-                get_script_path() + '/../data/' + TRAFFIC_LIGHT_DETECTOR_NAME + '/frozen_inference_graph.pb'),
-            minScore=0.5)
+            TrafficLightHavingMinScoreDetector(
+                TrafficLightDetector(
+                    get_script_path() + '/../data/' + TRAFFIC_LIGHT_DETECTOR_NAME + '/frozen_inference_graph.pb'),
+                minScore=0.5))
 
         # WHEN
         trafficLightExtractor.extractAndSaveTrafficLights(srcDir=get_script_path() + '/images', dstDir=self.test_dir)
