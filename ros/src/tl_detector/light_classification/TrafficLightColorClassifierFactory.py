@@ -124,7 +124,7 @@ class TrafficLightColorClassifierFactory:
 
 
 if __name__ == '__main__':
-    classifierFactory = TrafficLightColorClassifierFactory(train_data_dir='data/trafficlight_small_images',
+    classifierFactory = TrafficLightColorClassifierFactory(train_data_dir='data/trafficlight_images',
                                                            img_height=IMG_HEIGHT,
                                                            img_width=IMG_WIDTH,
                                                            epochs=50,
