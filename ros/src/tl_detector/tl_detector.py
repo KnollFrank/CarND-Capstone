@@ -25,6 +25,7 @@ class TLDetector(object):
     def __init__(self):
         rospy.init_node('tl_detector')
 
+        self.classify_only_every_n_th_camera_image = 50
         self.count = 0
         self.prevTrafficLight = None
         
@@ -141,7 +142,7 @@ class TLDetector(object):
             self.prev_light_loc = None
             return False
 
-        self.count = (self.count + 1) % 60
+        self.count = (self.count + 1) % self.classify_only_every_n_th_camera_image
         if self.count != 0 and self.prevTrafficLight is not None:
             rospy.loginfo("previous traffic light color: %s", trafficLightStateAsString(self.prevTrafficLight))
             return self.prevTrafficLight
