@@ -27,7 +27,7 @@ class TrafficLightExtractorTest(TestCase):
             TrafficLightHavingMinScoreDetector(
                 TrafficLightDetector(
                     get_script_path() + '/../data/' + TRAFFIC_LIGHT_DETECTOR_NAME + '/frozen_inference_graph.pb'),
-                minScore=0.5))
+                minScore=0.55))
 
         # WHEN
         trafficLightExtractor.extractAndSaveTrafficLights(srcDir=get_script_path() + '/images', dstDir=self.test_dir)
