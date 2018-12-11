@@ -59,7 +59,6 @@ class TrafficLightExtractor:
 if __name__ == '__main__':
     trafficLightExtractor = TrafficLightExtractor(
         TrafficLightHavingMinScoreDetector(
-            TrafficLightDetector('data/' + TRAFFIC_LIGHT_DETECTOR_NAME + '/frozen_inference_graph.pb'),
-            minScore=0.55))
+            TrafficLightDetector('data/' + TRAFFIC_LIGHT_DETECTOR_NAME + '/frozen_inference_graph.pb')))
     trafficLightExtractor.extractAndSaveTrafficLights(srcDir='data/simulator_images',
                                                       dstDir='data/trafficlight_images')

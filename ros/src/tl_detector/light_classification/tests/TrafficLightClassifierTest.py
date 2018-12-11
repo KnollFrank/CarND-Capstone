@@ -30,8 +30,7 @@ class TrafficLightClassifierTest(TestCase):
         classifier = TrafficLightClassifier(
             TrafficLightHavingMinScoreDetector(
                 TrafficLightDetector(
-                    get_script_path() + '/../data/' + TRAFFIC_LIGHT_DETECTOR_NAME + '/frozen_inference_graph.pb'),
-                minScore=0.55),
+                    get_script_path() + '/../data/' + TRAFFIC_LIGHT_DETECTOR_NAME + '/frozen_inference_graph.pb')),
             TrafficLightColorClassifier(get_script_path() + '/../' + TRAFFIC_LIGHT_COLOR_CLASSIFIER_FILE,
                                         img_height=IMG_HEIGHT, img_width=IMG_WIDTH))
         image = PILImage2numpyImage(Image.open(imageFile))

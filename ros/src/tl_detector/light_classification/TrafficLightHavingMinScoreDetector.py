@@ -1,8 +1,8 @@
 class TrafficLightHavingMinScoreDetector:
 
-    def __init__(self, trafficLightDetector, minScore):
+    def __init__(self, trafficLightDetector):
         self.trafficLightDetector = trafficLightDetector
-        self.minScore = minScore
+        self.minScore = 0.6
 
     def detectTrafficLightsWithinNumpyImage(self, numpyImage):
         return self.filterByMinScore(self.trafficLightDetector.detectTrafficLightsWithinNumpyImage(numpyImage))

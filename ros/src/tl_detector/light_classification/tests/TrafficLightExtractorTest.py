@@ -26,8 +26,7 @@ class TrafficLightExtractorTest(TestCase):
         trafficLightExtractor = TrafficLightExtractor(
             TrafficLightHavingMinScoreDetector(
                 TrafficLightDetector(
-                    get_script_path() + '/../data/' + TRAFFIC_LIGHT_DETECTOR_NAME + '/frozen_inference_graph.pb'),
-                minScore=0.55))
+                    get_script_path() + '/../data/' + TRAFFIC_LIGHT_DETECTOR_NAME + '/frozen_inference_graph.pb')))
 
         # WHEN
         trafficLightExtractor.extractAndSaveTrafficLights(srcDir=get_script_path() + '/images', dstDir=self.test_dir)
@@ -41,7 +40,7 @@ class TrafficLightExtractorTest(TestCase):
 
         # check green
         self.assertEqual(self.getNumberOfFilesMatching(self.test_dir + '/green/img_0175_green_*.jpg'), 2)
-        self.assertEqual(self.getNumberOfFilesMatching(self.test_dir + '/green/img_0475_green_*.jpg'), 2)
+        self.assertEqual(self.getNumberOfFilesMatching(self.test_dir + '/green/img_0475_green_*.jpg'), 1)
 
     def getNumberOfFilesMatching(self, pattern):
         return len([file for file in glob.glob(pattern) if os.path.isfile(file)])
