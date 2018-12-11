@@ -1,37 +1,3 @@
-alle Kombinationen ausprobieren:
-- Dog-Breed-Classifier-TopModel: https://github.com/KnollFrank/MLND-Dog-Breed-Classifier/blob/master/dog_app.ipynb
-- kleines TopModel
-
-- VGG16
-- ResNet
-- weitere Architekturen aus https://keras.io/applications/
-
-- ImageNet
-- COCO (https://github.com/fizyr/keras-retinanet/blob/master/README.md)
-
-mehr Trainingsdaten
-
-versuche folgendes um Ampeln zu erkennen:
-- erkenne Ampeln mit Tensorflow Object Detection API (https://github.com/tensorflow/models/tree/master/research/object_detection): :-)
-  - erkenne die Ampelfarbe mit Bildverarbeitung oder machine learning.
-- 000: Dog-Breed-Classifier-TopModel, VGG16,  ImageNet:
-- 001: Dog-Breed-Classifier-TopModel, VGG16,  COCO:
-- 010: Dog-Breed-Classifier-TopModel, ResNet, ImageNet:
-- 011: Dog-Breed-Classifier-TopModel, ResNet, COCO:
-+ 100: kleines TopModel,              VGG16,  ImageNet: :-(
-- 101: kleines TopModel,              VGG16,  COCO:
-- 110: kleines TopModel,              ResNet, ImageNet:
-- 111: kleines TopModel,              ResNet, COCO:
-
-Tensorflow Object Detection API Workflow:
-+ alle Ampeln aus den Simulatorbildern mit der Object Detection API extrahieren, labeln und speichern.
-- irgendein CNN auf diese extrahierten und gelabelten Bilder anwenden (siehe /home/frankknoll/udacity/SDCND/tmp/transfer_learning_test/transfer_learning.ipynb)
-
-frankknoll@frankknoll-XPS-13-9370:~/udacity/SDCND/CarND-Capstone$ conda env update carnd -f requirements.txt
-
-TODO:
-- die Erkennung der Ampeln via TrafficLightDetector.detectTrafficLightsWithinNumpyImage() mit rfcn_resnet101_coco_2018_01_28 ist präzise, aber langsam.
-- ssd_mobilenet_v1_coco_11_06_2017
 - beachte https://classroom.udacity.com/nanodegrees/nd013/parts/30260907-68c1-4f24-b793-89c0c2a0ad32/modules/702b3c5a-b896-4cca-8a64-dfe0daf09449/lessons/e43b2e6d-6def-4d3a-b332-7a58b847bfa4/concepts/d7a280ee-cd72-41d2-ab6d-9dae26dd42d4:
 
     If you are having trouble with latency when turning on camera images in the simulator, try classifying only every third or fourth camera image.
@@ -41,4 +7,7 @@ TODO:
     find /home/workspace/your/directory -type f -iname "*.py" -exec chmod +x {} \;
     Additionally, if you are uploading your own previous work, you will need to add the folder found in /home/workspace/CarND-Capstone/ros/src/dbw_mkz_msgs to your project.
 
+TODO:
+- erst dann die Ampelerkennung laufen lassen, wenn der Abstand des Autos zur nächsten Ampel <= 50 Meter ist. (siehe data_collector.py:process_traffic_lights())
+- nur jede Sekunde die Ampelerkennung laufen lassen oder "classifying only every third or fourth camera image".
 
