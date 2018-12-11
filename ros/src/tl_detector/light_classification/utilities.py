@@ -1,4 +1,5 @@
-import os, errno
+import errno
+import os
 
 import numpy as np
 from PIL import Image
@@ -28,10 +29,6 @@ def loadNumpyImage(imagePath):
 
 def loadPILImage(imagePath):
     return Image.open(imagePath)
-
-
-def resizeNumpyImageAsPILImage(numpyImage, width, height):
-    return resizePILImage(numpyImage2PILImage(numpyImage), width=width, height=height)
 
 
 def resizePILImage(PILImage, width, height):
