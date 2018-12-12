@@ -9,5 +9,4 @@
 
 TODO:
 - erst dann die Ampelerkennung laufen lassen, wenn der Abstand des Autos zur nächsten Ampel <= 50 Meter ist. (siehe data_collector.py:process_traffic_lights())
-- nur jede Sekunde die Ampelerkennung laufen lassen oder "classifying only every third or fourth camera image".
-
++ nur jede Sekunde die Ampelerkennung laufen lassen oder "classifying only every third or fourth camera image".
