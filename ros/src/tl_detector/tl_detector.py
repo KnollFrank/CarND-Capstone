@@ -26,7 +26,7 @@ class TLDetector(object):
     def __init__(self):
         rospy.init_node('tl_detector')
 
-        self.classify_only_every_n_th_camera_image = 50
+        self.classify_only_every_n_th_camera_image = 4
         self.count = 0
         self.prevTrafficLight = None
 
