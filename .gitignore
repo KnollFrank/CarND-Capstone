@@ -5,7 +5,6 @@ profile.tmp
 dbw_test.rosbag.bag
 ros/src/tl_detector/light_classification/data/TrafficLightColorClassifier
 ros/src/tl_detector/light_classification/data/trafficlight_images
-ros/src/tl_detector/light_classification/trafficLightColorClassifier.h5
 ros/src/tl_detector/light_classification/examples
 .ipynb_checkpoints
 .idea
