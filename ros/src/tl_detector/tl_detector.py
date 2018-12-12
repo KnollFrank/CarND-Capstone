@@ -18,6 +18,7 @@ import cv2
 import yaml
 from scipy.spatial import KDTree
 from data_collector import trafficLightStateAsString
+import math
 
 STATE_COUNT_THRESHOLD = 3
 
@@ -174,12 +175,24 @@ class TLDetector(object):
             int: ID of traffic light color (specified in styx_msgs/TrafficLight)
 
         """
-        closest_light, line_wp_idx = self.get_closest_light()
+        closest_light, car_wp_idx, line_wp_idx = self.get_closest_light()
         if closest_light:
-            state = self.get_light_state(closest_light)
+            state = self.get_light_state(closest_light) if self.isCarCloseToTrafficLight(car_wp_idx, line_wp_idx) else TrafficLight.UNKNOWN
             return line_wp_idx, state
 
         return -1, TrafficLight.UNKNOWN
+
+    def isCarCloseToTrafficLight(self, car_wp_idx, line_wp_idx):
+        return self.distance(self.waypoints.waypoints, car_wp_idx, line_wp_idx) <= 50
+
+    # TODO: DRY with WaypointUpdater.distance()
+    def distance(self, waypoints, wp1, wp2):
+        dist = 0
+        dl = lambda a, b: math.sqrt((a.x-b.x)**2 + (a.y-b.y)**2  + (a.z-b.z)**2)
+        for i in range(wp1, wp2+1):
+            dist += dl(waypoints[wp1].pose.pose.position, waypoints[i].pose.pose.position)
+            wp1 = i
+        return dist
 
     # TODO: DRY with DataCollector.get_closest_light()
     # List of positions that correspond to the line to stop in front of for a given intersection
@@ -206,7 +219,7 @@ class TLDetector(object):
                     closest_light = light
                     line_wp_idx = temp_wp_idx
 
-        return closest_light, line_wp_idx
+        return closest_light, car_wp_idx, line_wp_idx
 
 if __name__ == '__main__':
     try:
